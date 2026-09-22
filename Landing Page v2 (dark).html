@@ -1,0 +1,1084 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Helion — Monitoramento e gestão de usinas solares para integradores</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700;800&family=Geist+Mono:wght@400;500;600&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg:        #06080A;
+    --bg-1:      #0B0F12;
+    --bg-2:      #11161A;
+    --bg-3:      #181F24;
+    --panel:     #0E1316;
+    --line:      #1E262C;
+    --line-2:    #2A343B;
+    --white:     #F3F6F4;
+    --ink-2:     #9BA7AD;
+    --ink-3:     #66727A;
+
+    --green:     #00C853;   /* verde vivo */
+    --green-d:   #009C3B;   /* verde bandeira */
+    --green-l:   #1DE074;
+    --neon:      #D5FF3A;   /* lime elétrico */
+    --neon-2:    #C2F02A;
+    --yellow:    #FFD60A;
+    --lilac:     #B49BF0;
+    --lilac-d:   #8B6FD8;
+    --cyan:      #2BE0D6;
+    --red:       #FF4D5E;
+    --orange:    #FF9F2E;
+
+    --max: 1340px;
+    --r-sm: 8px;
+    --r-md: 14px;
+    --r-lg: 20px;
+    --r-xl: 32px;
+
+    --glow-green: 0 0 0 1px color-mix(in oklab, var(--green) 40%, transparent), 0 0 40px -8px color-mix(in oklab, var(--green) 60%, transparent);
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--white);
+    font-family: "Geist", system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif;
+    font-size: 16px; line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    overflow-x: hidden;
+  }
+  ::selection { background: var(--neon); color: #06080A; }
+  a { color: inherit; text-decoration: none; }
+  img { display: block; max-width: 100%; }
+
+  .wrap { max-width: var(--max); margin: 0 auto; padding: 0 28px; }
+  .mono {
+    font-family: "Geist Mono", ui-monospace, "SF Mono", Menlo, monospace;
+    font-size: 12px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-3);
+  }
+  .serif-i { font-family: "Instrument Serif", "Times New Roman", serif; font-style: italic; font-weight: 400; }
+
+  /* grid background utility */
+  .grid-bg {
+    position: absolute; inset: 0; z-index: 0; pointer-events: none;
+    background-image:
+      linear-gradient(color-mix(in oklab, var(--line) 60%, transparent) 1px, transparent 1px),
+      linear-gradient(90deg, color-mix(in oklab, var(--line) 60%, transparent) 1px, transparent 1px);
+    background-size: 56px 56px;
+    -webkit-mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, #000 30%, transparent 75%);
+    mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, #000 30%, transparent 75%);
+  }
+
+  /* ===== LOGO ===== */
+  .logo { display: inline-flex; align-items: center; gap: 10px; font-weight: 600; letter-spacing: -0.03em; font-size: 22px; color: var(--white); }
+  .logo .mark { width: 30px; height: 30px; flex-shrink: 0; filter: drop-shadow(0 0 10px color-mix(in oklab, var(--neon) 45%, transparent)); }
+  .logo .word { line-height: 1; }
+
+  /* ===== NAV ===== */
+  .nav {
+    position: sticky; top: 0; z-index: 60;
+    background: color-mix(in oklab, var(--bg) 78%, transparent);
+    backdrop-filter: saturate(150%) blur(14px);
+    border-bottom: 1px solid var(--line);
+  }
+  .nav-inner { display: flex; align-items: center; justify-content: space-between; height: 72px; }
+  .nav-links { display: flex; gap: 28px; }
+  .nav-links a { color: var(--ink-2); font-size: 14px; font-weight: 500; transition: color 0.15s; }
+  .nav-links a:hover { color: var(--white); }
+  .nav-cta { display: flex; gap: 10px; align-items: center; }
+
+  .btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 12px 20px; border-radius: 999px;
+    font-size: 14px; font-weight: 600; letter-spacing: -0.005em;
+    border: 1px solid transparent; cursor: pointer;
+    transition: transform 0.15s ease, background 0.15s ease, color 0.15s, border-color 0.15s, box-shadow 0.2s;
+    white-space: nowrap;
+  }
+  .btn-neon { background: var(--neon); color: #06080A; }
+  .btn-neon:hover { background: var(--neon-2); transform: translateY(-1px); box-shadow: 0 10px 30px -8px color-mix(in oklab, var(--neon) 70%, transparent); }
+  .btn-green { background: var(--green); color: #04130A; }
+  .btn-green:hover { background: var(--green-l); transform: translateY(-1px); }
+  .btn-ghost { background: transparent; color: var(--white); border-color: var(--line-2); }
+  .btn-ghost:hover { border-color: var(--ink-2); background: var(--bg-2); }
+  .arrow::after { content: "→"; margin-left: 4px; transition: transform 0.15s ease; }
+  .arrow:hover::after { transform: translateX(3px); }
+
+  /* ===== HERO ===== */
+  .hero { position: relative; padding: 80px 0 90px; overflow: hidden; }
+  .hero-aura {
+    position: absolute; top: -300px; left: 50%; transform: translateX(-50%);
+    width: 1100px; height: 700px; z-index: 0; pointer-events: none;
+    background:
+      radial-gradient(circle at 35% 40%, color-mix(in oklab, var(--green) 30%, transparent) 0%, transparent 55%),
+      radial-gradient(circle at 70% 55%, color-mix(in oklab, var(--lilac) 22%, transparent) 0%, transparent 55%);
+    filter: blur(60px); opacity: 0.7;
+  }
+  .hero .wrap { position: relative; z-index: 2; }
+  .hero-top { text-align: center; max-width: 940px; margin: 0 auto; }
+  .eyebrow {
+    display: inline-flex; align-items: center; gap: 10px;
+    padding: 7px 16px; border: 1px solid var(--line-2); border-radius: 999px;
+    background: color-mix(in oklab, var(--bg-2) 70%, transparent);
+    font-size: 12px; margin-bottom: 32px;
+  }
+  .eyebrow .live {
+    width: 7px; height: 7px; border-radius: 50%; background: var(--green-l);
+    box-shadow: 0 0 0 0 color-mix(in oklab, var(--green-l) 70%, transparent);
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse {
+    0% { box-shadow: 0 0 0 0 color-mix(in oklab, var(--green-l) 60%, transparent); }
+    70% { box-shadow: 0 0 0 8px transparent; }
+    100% { box-shadow: 0 0 0 0 transparent; }
+  }
+  .hero h1 {
+    font-size: clamp(46px, 6.6vw, 100px);
+    line-height: 0.94; letter-spacing: -0.045em; font-weight: 500;
+    margin: 0 0 26px;
+  }
+  .hero h1 .hl-neon { color: var(--neon); }
+  .hero h1 .hl-green { color: var(--green-l); }
+  .hero p.lede {
+    font-size: 20px; line-height: 1.45; color: var(--ink-2);
+    max-width: 64ch; margin: 0 auto 36px;
+  }
+  .hero-ctas { display: flex; gap: 12px; align-items: center; justify-content: center; flex-wrap: wrap; }
+  .hero-sub { margin-top: 18px; font-size: 13px; color: var(--ink-3); }
+
+  /* HERO dashboard panel */
+  .hero-panel {
+    position: relative; z-index: 2;
+    margin: 64px auto 0; max-width: 1180px;
+    background: linear-gradient(180deg, var(--bg-2), var(--bg-1));
+    border: 1px solid var(--line-2);
+    border-radius: var(--r-xl);
+    padding: 14px;
+    box-shadow: 0 50px 120px -40px rgba(0,0,0,0.8), 0 0 0 1px rgba(255,255,255,0.02) inset;
+  }
+  .hp-bar { display: flex; align-items: center; gap: 8px; padding: 6px 10px 14px; }
+  .hp-bar .d { width: 11px; height: 11px; border-radius: 50%; }
+  .hp-bar .url {
+    margin-left: 12px; flex: 1; background: var(--bg-3); color: var(--ink-2);
+    padding: 5px 14px; border-radius: 999px; font-family: "Geist Mono", monospace; font-size: 11px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .hp-bar .url::before { content: "🔒"; font-size: 9px; filter: grayscale(1); opacity: 0.6; }
+  .hp-body { display: grid; grid-template-columns: 1.55fr 1fr; gap: 12px; }
+  .hp-card { background: var(--panel); border: 1px solid var(--line); border-radius: var(--r-md); padding: 18px; }
+  .hp-card .hp-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 14px; }
+  .hp-card .hp-head .t { font-size: 14px; font-weight: 600; letter-spacing: -0.01em; }
+  .hp-card .hp-head .s { font-family: "Geist Mono", monospace; font-size: 10.5px; color: var(--ink-3); letter-spacing: 0.04em; }
+  .hp-kpis { display: flex; gap: 28px; margin-bottom: 16px; }
+  .hp-kpi .v { font-size: 28px; font-weight: 500; letter-spacing: -0.02em; line-height: 1; }
+  .hp-kpi .v .u { font-size: 13px; color: var(--ink-3); font-weight: 400; }
+  .hp-kpi .k { font-family: "Geist Mono", monospace; font-size: 10px; color: var(--ink-3); margin-top: 6px; text-transform: uppercase; letter-spacing: 0.05em; }
+  .hp-kpi .v.green { color: var(--green-l); }
+  .hp-kpi .v.neon { color: var(--neon); }
+
+  /* live chart */
+  .chart-wrap { position: relative; height: 160px; }
+  .chart-svg { width: 100%; height: 100%; overflow: visible; }
+  .chart-grid line { stroke: var(--line); stroke-width: 1; stroke-dasharray: 3 5; }
+  .area-fill { fill: url(#areaGrad); }
+  .area-line { fill: none; stroke: var(--green-l); stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; filter: drop-shadow(0 0 6px color-mix(in oklab, var(--green-l) 70%, transparent)); }
+  .scan {
+    stroke-dasharray: 1400; stroke-dashoffset: 1400;
+    animation: draw 3s ease forwards;
+  }
+  @keyframes draw { to { stroke-dashoffset: 0; } }
+  .pulse-dot { fill: var(--neon); animation: blink 1.6s infinite; }
+  @keyframes blink { 0%,100% { opacity: 1; } 50% { opacity: 0.3; } }
+
+  /* alerts mini stack */
+  .hp-alerts { display: flex; flex-direction: column; gap: 10px; }
+  .alert-row {
+    display: flex; gap: 12px; align-items: flex-start;
+    padding: 12px; border-radius: var(--r-sm);
+    background: var(--bg-2); border: 1px solid var(--line);
+  }
+  .alert-row .ic { width: 30px; height: 30px; border-radius: 8px; flex-shrink: 0; display: grid; place-items: center; font-size: 14px; }
+  .alert-row .ic.ok { background: color-mix(in oklab, var(--green) 18%, transparent); color: var(--green-l); }
+  .alert-row .ic.warn { background: color-mix(in oklab, var(--orange) 18%, transparent); color: var(--orange); }
+  .alert-row .ic.err { background: color-mix(in oklab, var(--red) 18%, transparent); color: var(--red); }
+  .alert-row .txt { flex: 1; }
+  .alert-row .txt .l1 { font-size: 13px; font-weight: 600; }
+  .alert-row .txt .l2 { font-size: 11.5px; color: var(--ink-3); margin-top: 2px; }
+  .alert-row .time { font-family: "Geist Mono", monospace; font-size: 10px; color: var(--ink-3); }
+
+  /* ===== MARQUEE TRUST ===== */
+  .trust { border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); background: var(--bg-1); padding: 26px 0; }
+  .trust-inner { display: flex; align-items: center; gap: 40px; flex-wrap: wrap; justify-content: space-between; }
+  .trust-label { font-family: "Geist Mono", monospace; font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-3); flex-shrink: 0; }
+  .trust-logos { display: flex; gap: 32px; flex-wrap: wrap; align-items: center; color: var(--ink-2); font-weight: 500; font-size: 14px; }
+  .trust-logos b { color: var(--white); }
+
+  /* ===== SECTION ===== */
+  section { padding: 130px 0; position: relative; }
+  .sec-tag {
+    display: inline-flex; align-items: center; gap: 10px;
+    font-family: "Geist Mono", monospace; font-size: 11px; letter-spacing: 0.08em;
+    text-transform: uppercase; color: var(--neon);
+  }
+  .sec-tag::before { content: ""; width: 24px; height: 1px; background: var(--neon); }
+  .section-head { display: grid; grid-template-columns: 1fr 1.25fr; gap: 64px; align-items: end; margin-bottom: 60px; }
+  .section-head h2 {
+    font-size: clamp(38px, 4.6vw, 66px); letter-spacing: -0.038em; line-height: 1.0; font-weight: 500; margin: 16px 0 0;
+  }
+  .section-head .desc { color: var(--ink-2); font-size: 17px; line-height: 1.55; max-width: 56ch; }
+  .section-head h2 .serif-i { color: var(--green-l); }
+
+  /* ===== BIG FEATURE: MONITORING ===== */
+  .mon { display: grid; grid-template-columns: 1.1fr 1fr; gap: 64px; align-items: center; }
+  .mon-visual {
+    position: relative; border: 1px solid var(--line-2); border-radius: var(--r-xl);
+    background: linear-gradient(180deg, var(--bg-2), var(--bg-1)); padding: 28px;
+    overflow: hidden;
+  }
+  .mon-visual .corner-glow { position: absolute; top: -80px; right: -80px; width: 280px; height: 280px; border-radius: 50%; background: radial-gradient(circle, color-mix(in oklab, var(--green) 30%, transparent), transparent 70%); filter: blur(40px); }
+  .mon-stat-row { display: flex; gap: 14px; margin-bottom: 22px; position: relative; }
+  .mon-stat { flex: 1; background: var(--panel); border: 1px solid var(--line); border-radius: var(--r-md); padding: 16px; }
+  .mon-stat .k { font-family: "Geist Mono", monospace; font-size: 10px; color: var(--ink-3); text-transform: uppercase; letter-spacing: 0.05em; }
+  .mon-stat .v { font-size: 26px; font-weight: 500; letter-spacing: -0.02em; margin-top: 8px; }
+  .mon-stat .v.green { color: var(--green-l); }
+  .mon-bars { display: flex; align-items: flex-end; gap: 7px; height: 130px; padding: 16px; background: var(--panel); border: 1px solid var(--line); border-radius: var(--r-md); position: relative; }
+  .mon-bars .bar { flex: 1; background: linear-gradient(180deg, var(--green-l), color-mix(in oklab, var(--green) 35%, transparent)); border-radius: 3px 3px 0 0; min-height: 6px; }
+  .mon-feat-list { list-style: none; padding: 0; margin: 28px 0 0; }
+  .mon-feat-list li {
+    display: flex; gap: 14px; align-items: flex-start; padding: 16px 0;
+    border-top: 1px solid var(--line);
+  }
+  .mon-feat-list li .ic {
+    width: 30px; height: 30px; border-radius: 8px; flex-shrink: 0; display: grid; place-items: center;
+    background: color-mix(in oklab, var(--green) 16%, transparent); color: var(--green-l);
+    border: 1px solid color-mix(in oklab, var(--green) 30%, transparent);
+  }
+  .mon-feat-list li .ft { font-size: 16px; font-weight: 600; }
+  .mon-feat-list li .fd { font-size: 13.5px; color: var(--ink-2); margin-top: 3px; line-height: 1.5; }
+  .mon h3 { font-size: clamp(30px, 3.4vw, 46px); letter-spacing: -0.03em; line-height: 1.02; font-weight: 500; margin: 16px 0 18px; }
+  .mon p.body { font-size: 17px; color: var(--ink-2); line-height: 1.55; margin: 0; }
+
+  /* ===== WHATSAPP ALERTS ===== */
+  .wa { display: grid; grid-template-columns: 1fr 1.05fr; gap: 72px; align-items: center; }
+  .phone {
+    width: 320px; margin: 0 auto;
+    background: #0b0b0c; border: 10px solid #16181b; border-radius: 44px;
+    padding: 14px 12px 20px; position: relative;
+    box-shadow: 0 50px 100px -30px rgba(0,0,0,0.8);
+  }
+  .phone::before { content: ""; position: absolute; top: 18px; left: 50%; transform: translateX(-50%); width: 110px; height: 26px; background: #16181b; border-radius: 0 0 16px 16px; }
+  .wa-screen { background: #0c1417; border-radius: 28px; overflow: hidden; }
+  .wa-head { background: #1f2c33; padding: 38px 16px 14px; display: flex; align-items: center; gap: 12px; }
+  .wa-head .av { width: 38px; height: 38px; border-radius: 50%; background: var(--green); display: grid; place-items: center; }
+  .wa-head .nm { font-size: 14px; font-weight: 600; color: #fff; }
+  .wa-head .st { font-size: 11px; color: #8aa; }
+  .wa-body { padding: 16px 12px; display: flex; flex-direction: column; gap: 10px; min-height: 360px;
+    background-image: radial-gradient(color-mix(in oklab, #1f2c33 60%, transparent) 1px, transparent 1px); background-size: 18px 18px; }
+  .wa-msg {
+    align-self: flex-start; max-width: 84%;
+    background: #1b272d; border-radius: 4px 14px 14px 14px;
+    padding: 10px 12px; font-size: 13px; line-height: 1.45; color: #e8efe9;
+  }
+  .wa-msg.alert { border-left: 3px solid var(--red); }
+  .wa-msg.ok { border-left: 3px solid var(--green-l); }
+  .wa-msg .mh { font-weight: 700; font-size: 12px; margin-bottom: 4px; display: flex; align-items: center; gap: 6px; }
+  .wa-msg .mh.r { color: var(--red); }
+  .wa-msg .mh.g { color: var(--green-l); }
+  .wa-msg .mono-sm { font-family: "Geist Mono", monospace; font-size: 11px; color: #9fb0a8; }
+  .wa-msg .tm { font-size: 9px; color: #6b7a73; text-align: right; margin-top: 4px; }
+
+  .wa-points { list-style: none; padding: 0; margin: 32px 0 0; }
+  .wa-points li { display: flex; gap: 14px; align-items: flex-start; padding: 14px 0; border-top: 1px solid var(--line); font-size: 15px; color: var(--ink-2); }
+  .wa-points li b { color: var(--white); font-weight: 600; }
+  .wa-points li .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--neon); margin-top: 7px; flex-shrink: 0; }
+
+  /* ===== END CLIENT (3 cards) ===== */
+  .ec-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+  .ec-card {
+    background: linear-gradient(180deg, var(--bg-2), var(--bg-1));
+    border: 1px solid var(--line); border-radius: var(--r-lg); padding: 30px;
+    transition: border-color 0.2s, transform 0.2s; position: relative; overflow: hidden;
+  }
+  .ec-card:hover { border-color: color-mix(in oklab, var(--green) 50%, transparent); transform: translateY(-4px); }
+  .ec-card .ec-ic { width: 46px; height: 46px; border-radius: 12px; display: grid; place-items: center; margin-bottom: 22px;
+    background: color-mix(in oklab, var(--green) 14%, transparent); border: 1px solid color-mix(in oklab, var(--green) 28%, transparent); }
+  .ec-card h3 { font-size: 21px; font-weight: 600; letter-spacing: -0.015em; margin: 0 0 10px; }
+  .ec-card p { font-size: 14.5px; color: var(--ink-2); line-height: 1.55; margin: 0; }
+  .ec-card .ec-demo { margin-top: 22px; }
+
+  /* mini bill */
+  .mini-bill { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 14px; }
+  .mini-bill .mb-row { display: flex; justify-content: space-between; font-size: 12px; padding: 5px 0; }
+  .mini-bill .mb-row .lbl { color: var(--ink-3); }
+  .mini-bill .mb-row .val { font-family: "Geist Mono", monospace; }
+  .mini-bill .mb-row.tot { border-top: 1px solid var(--line); margin-top: 6px; padding-top: 10px; font-weight: 600; }
+  .mini-bill .mb-row.tot .val { color: var(--green-l); font-size: 14px; }
+  .mb-credit { color: var(--green-l); }
+
+  /* daily gen sparkline */
+  .spark { display: flex; align-items: flex-end; gap: 4px; height: 64px; }
+  .spark .sb { flex: 1; background: color-mix(in oklab, var(--green) 40%, transparent); border-radius: 2px 2px 0 0; }
+  .spark .sb.peak { background: var(--neon); }
+
+  /* credit injection */
+  .inj-flow { display: flex; align-items: center; gap: 8px; }
+  .inj-node { flex: 1; text-align: center; background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 10px 6px; }
+  .inj-node .n { font-size: 16px; font-weight: 600; color: var(--green-l); }
+  .inj-node .l { font-size: 9px; color: var(--ink-3); margin-top: 2px; font-family: "Geist Mono", monospace; text-transform: uppercase; }
+  .inj-arrow { color: var(--neon); font-size: 14px; }
+
+  /* ===== BILLING / CREDIT SELLER ===== */
+  .bill-split { display: grid; grid-template-columns: 1fr 1.1fr; gap: 64px; align-items: center; }
+  .bill-feats { display: grid; grid-template-columns: 1fr 1fr; gap: 0; border-top: 1px solid var(--line); border-left: 1px solid var(--line); }
+  .bill-feat { padding: 26px 24px; border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+  .bill-feat .bi { color: var(--neon); margin-bottom: 14px; }
+  .bill-feat h4 { font-size: 17px; font-weight: 600; margin: 0 0 8px; letter-spacing: -0.01em; }
+  .bill-feat p { font-size: 13.5px; color: var(--ink-2); margin: 0; line-height: 1.5; }
+
+  /* ===== AUDIENCE SPECTRUM ===== */
+  .spectrum { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; border: 1px solid var(--line-2); border-radius: var(--r-xl); overflow: hidden; }
+  .spec-col { padding: 36px 28px; border-right: 1px solid var(--line); position: relative; transition: background 0.25s; }
+  .spec-col:last-child { border-right: none; }
+  .spec-col:hover { background: var(--bg-2); }
+  .spec-col .scale-bar { height: 4px; border-radius: 2px; margin-bottom: 24px; }
+  .spec-col .cap { font-family: "Geist Mono", monospace; font-size: 10.5px; letter-spacing: 0.05em; text-transform: uppercase; color: var(--ink-3); }
+  .spec-col h3 { font-size: 22px; font-weight: 600; letter-spacing: -0.02em; margin: 8px 0 12px; }
+  .spec-col p { font-size: 13.5px; color: var(--ink-2); line-height: 1.55; margin: 0 0 20px; }
+  .spec-col .size { font-family: "Instrument Serif", serif; font-style: italic; font-size: 30px; color: var(--green-l); }
+  .spec-col .size .u { font-size: 14px; color: var(--ink-3); font-style: normal; font-family: "Geist Mono", monospace; }
+
+  /* ===== SHOWCASE ===== */
+  .showcase-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; margin-top: 56px; }
+  .shot { background: var(--bg-1); border: 1px solid var(--line-2); border-radius: var(--r-lg); overflow: hidden; }
+  .shot.tall { grid-row: span 2; }
+  .shot-meta { display: flex; justify-content: space-between; align-items: center; padding: 20px 24px; border-bottom: 1px solid var(--line); }
+  .shot-meta .t { display: flex; align-items: center; gap: 10px; font-weight: 600; font-size: 15px; letter-spacing: -0.01em; }
+  .shot-meta .t::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--green-l); box-shadow: 0 0 8px var(--green-l); }
+  .shot-meta .k { font-family: "Geist Mono", monospace; font-size: 10.5px; letter-spacing: 0.05em; color: var(--ink-3); text-transform: uppercase; }
+  .shot-image { background: #fff; }
+  .shot-image img { display: block; width: 100%; }
+
+  /* ===== HOW IT WORKS ===== */
+  .flow-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 0; margin-top: 56px; }
+  .flow-step { padding: 0 22px; border-left: 1px solid var(--line); position: relative; }
+  .flow-step:first-child { border-left: none; padding-left: 0; }
+  .flow-step .sn { font-family: "Geist Mono", monospace; font-size: 11px; color: var(--neon); letter-spacing: 0.06em; margin-bottom: 18px; }
+  .flow-step .marker { width: 38px; height: 38px; border-radius: 50%; background: var(--neon); color: #06080A; display: inline-flex; align-items: center; justify-content: center; font-size: 15px; font-weight: 700; margin-bottom: 20px; box-shadow: 0 0 20px -4px color-mix(in oklab, var(--neon) 70%, transparent); }
+  .flow-step h4 { font-size: 18px; font-weight: 600; letter-spacing: -0.01em; margin: 0 0 10px; line-height: 1.2; }
+  .flow-step p { font-size: 13.5px; color: var(--ink-2); margin: 0; line-height: 1.55; }
+
+  /* ===== PLANS ===== */
+  .plans { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+  .plan { border: 1px solid var(--line-2); background: linear-gradient(180deg, var(--bg-1), var(--bg)); border-radius: var(--r-lg); padding: 32px; display: flex; flex-direction: column; position: relative; transition: transform 0.2s, border-color 0.2s; }
+  .plan:hover { transform: translateY(-4px); }
+  .plan.featured { border-color: color-mix(in oklab, var(--neon) 50%, transparent); background: linear-gradient(180deg, var(--bg-2), var(--bg-1)); box-shadow: 0 30px 70px -30px color-mix(in oklab, var(--green) 40%, transparent); }
+  .plan .ptag { font-family: "Geist Mono", monospace; font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-3); margin-bottom: 24px; }
+  .plan.featured .ptag { color: var(--neon); }
+  .badge-pop { position: absolute; top: 26px; right: 26px; background: var(--neon); color: #06080A; padding: 5px 12px; border-radius: 999px; font-size: 11px; font-weight: 700; }
+  .plan h3 { font-size: 26px; font-weight: 600; letter-spacing: -0.02em; margin: 0 0 6px; }
+  .plan .sub { font-size: 13px; color: var(--ink-3); margin-bottom: 26px; }
+  .plan .price { font-size: 50px; letter-spacing: -0.03em; font-weight: 500; margin-bottom: 4px; line-height: 1; }
+  .plan .price .per { font-size: 14px; color: var(--ink-3); font-weight: 400; }
+  .plan .cap { font-size: 13px; margin: 18px 0 24px; padding-bottom: 24px; border-bottom: 1px solid var(--line); color: var(--ink-2); }
+  .plan ul { list-style: none; padding: 0; margin: 0 0 28px; flex: 1; }
+  .plan ul li { padding: 8px 0; font-size: 14px; display: flex; gap: 12px; align-items: flex-start; color: var(--ink-2); }
+  .plan ul li::before { content: "✓"; color: var(--green-l); font-weight: 700; flex-shrink: 0; font-family: "Geist Mono", monospace; }
+  .plan.featured ul li::before { color: var(--neon); }
+  .plan .btn { justify-content: center; width: 100%; }
+  .plans-note { text-align: center; color: var(--ink-3); font-size: 13px; margin-top: 32px; }
+
+  /* ===== FAQ ===== */
+  .faq { display: grid; grid-template-columns: 1fr 1fr; border-top: 1px solid var(--line); border-left: 1px solid var(--line); }
+  .faq details { padding: 28px; border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+  .faq summary { list-style: none; cursor: pointer; font-size: 18px; font-weight: 600; letter-spacing: -0.01em; display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+  .faq summary::-webkit-details-marker { display: none; }
+  .faq summary::after { content: "+"; font-family: "Geist Mono", monospace; font-size: 22px; color: var(--neon); transition: transform 0.2s; }
+  .faq details[open] summary::after { transform: rotate(45deg); }
+  .faq details p { margin: 16px 0 0; font-size: 14px; color: var(--ink-2); line-height: 1.6; max-width: 56ch; }
+
+  /* ===== CTA ===== */
+  .cta { text-align: center; padding: 170px 0 130px; position: relative; overflow: hidden; }
+  .cta-aura { position: absolute; inset: 0; z-index: 0; pointer-events: none;
+    background: radial-gradient(circle at 30% 40%, color-mix(in oklab, var(--green) 24%, transparent), transparent 50%),
+               radial-gradient(circle at 75% 55%, color-mix(in oklab, var(--lilac) 18%, transparent), transparent 50%); }
+  .cta .wrap { position: relative; z-index: 2; }
+  .cta h2 { font-size: clamp(54px, 8vw, 130px); letter-spacing: -0.045em; line-height: 0.92; font-weight: 500; margin: 24px auto 26px; max-width: 16ch; }
+  .cta h2 .hl { color: var(--neon); }
+  .cta p { color: var(--ink-2); font-size: 18px; max-width: 52ch; margin: 0 auto 40px; }
+
+  /* ===== FOOTER ===== */
+  footer { border-top: 1px solid var(--line); padding: 56px 0 32px; }
+  .foot-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 56px; margin-bottom: 48px; }
+  .foot-col h4 { font-family: "Geist Mono", monospace; font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-3); margin: 0 0 16px; font-weight: 500; }
+  .foot-col ul { list-style: none; padding: 0; margin: 0; }
+  .foot-col ul li { padding: 4px 0; }
+  .foot-col ul li a { font-size: 14px; color: var(--ink-2); }
+  .foot-col ul li a:hover { color: var(--neon); }
+  .foot-col p { font-size: 14px; color: var(--ink-2); margin: 16px 0 0; max-width: 36ch; line-height: 1.55; }
+  .foot-bottom { display: flex; justify-content: space-between; align-items: center; padding-top: 24px; border-top: 1px solid var(--line); font-size: 13px; color: var(--ink-3); }
+
+  @media (max-width: 1024px) {
+    .hp-body { grid-template-columns: 1fr; }
+    .section-head { grid-template-columns: 1fr; gap: 18px; }
+    .mon, .wa, .bill-split { grid-template-columns: 1fr; gap: 48px; }
+    .ec-grid { grid-template-columns: 1fr; }
+    .spectrum { grid-template-columns: 1fr 1fr; }
+    .spec-col:nth-child(2) { border-right: none; }
+    .spec-col { border-bottom: 1px solid var(--line); }
+    .showcase-grid { grid-template-columns: 1fr; }
+    .shot.tall { grid-row: span 1; }
+    .flow-grid { grid-template-columns: 1fr 1fr; gap: 32px; }
+    .flow-step { padding: 0; border-left: none; }
+    .plans { grid-template-columns: 1fr; }
+    .bill-feats { grid-template-columns: 1fr; }
+    .foot-grid { grid-template-columns: 1fr 1fr; }
+  }
+  @media (max-width: 640px) {
+    .wrap { padding: 0 20px; }
+    .nav-links { display: none; }
+    section { padding: 84px 0; }
+    .trust-inner { justify-content: center; }
+    .spectrum { grid-template-columns: 1fr; }
+    .spec-col { border-right: none; }
+    .faq { grid-template-columns: 1fr; }
+    .flow-grid { grid-template-columns: 1fr; }
+    .bill-feats { grid-template-columns: 1fr; }
+    .foot-grid { grid-template-columns: 1fr; gap: 32px; }
+    .foot-bottom { flex-direction: column; gap: 12px; align-items: flex-start; }
+    .hp-kpis { flex-wrap: wrap; gap: 18px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ===== logo symbol ===== -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="helion-mark" viewBox="0 0 100 100">
+      <circle cx="50" cy="50" r="22" fill="#00C853"/>
+      <ellipse cx="50" cy="50" rx="44" ry="13" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" transform="rotate(-28 50 50)"/>
+      <circle cx="86" cy="32" r="6.5" fill="#D5FF3A" stroke="currentColor" stroke-width="1.5"/>
+    </symbol>
+  </defs>
+</svg>
+
+<!-- ===== NAV ===== -->
+<nav class="nav">
+  <div class="wrap nav-inner">
+    <a class="logo" href="#"><svg class="mark" style="color:var(--white)"><use href="#helion-mark"/></svg><span class="word">helion</span></a>
+    <div class="nav-links">
+      <a href="#monitoramento">Monitoramento</a>
+      <a href="#alertas">Alertas</a>
+      <a href="#cliente">Cliente final</a>
+      <a href="#cobranca">Cobrança</a>
+      <a href="#planos">Planos</a>
+    </div>
+    <div class="nav-cta">
+      <a class="btn btn-ghost" href="#">Entrar</a>
+      <a class="btn btn-neon" href="#planos">Testar grátis</a>
+    </div>
+  </div>
+</nav>
+
+<!-- ===== HERO ===== -->
+<header class="hero">
+  <div class="grid-bg"></div>
+  <div class="hero-aura"></div>
+  <div class="wrap">
+    <div class="hero-top">
+      <span class="eyebrow mono"><span class="live"></span>Monitoramento ao vivo · da residência à grande usina</span>
+      <h1>O sistema operacional<br />das <span class="hl-green serif-i">usinas solares</span> do<br /><span class="hl-neon">Brasil.</span></h1>
+      <p class="lede">
+        Monitore geração em tempo real, receba alertas de falha no WhatsApp e entregue ao seu cliente a economia que ele
+        nunca conseguiu ver. Tudo isso enquanto o Helion cuida de créditos, faturas e cobrança — no automático.
+      </p>
+      <div class="hero-ctas">
+        <a href="#planos" class="btn btn-neon">Começar 14 dias grátis</a>
+        <a href="#monitoramento" class="btn btn-ghost arrow">Ver o monitoramento</a>
+      </div>
+      <div class="hero-sub mono">Sem cartão de crédito · Setup e migração inclusos</div>
+    </div>
+
+    <!-- Hero dashboard -->
+    <div class="hero-panel">
+      <div class="hp-bar">
+        <span class="d" style="background:#ff5f57"></span>
+        <span class="d" style="background:#ffbd2e"></span>
+        <span class="d" style="background:#28c93f"></span>
+        <span class="url">app.helionapp.com.br/monitoramento</span>
+      </div>
+      <div class="hp-body">
+        <!-- live generation -->
+        <div class="hp-card">
+          <div class="hp-head">
+            <span class="t">Geração em tempo real</span>
+            <span class="s">PORTFÓLIO · 24 USINAS · AO VIVO</span>
+          </div>
+          <div class="hp-kpis">
+            <div class="hp-kpi"><div class="v green">847,3<span class="u"> kW</span></div><div class="k">Potência agora</div></div>
+            <div class="hp-kpi"><div class="v">4.218<span class="u"> kWh</span></div><div class="k">Hoje</div></div>
+            <div class="hp-kpi"><div class="v neon">98,6<span class="u">%</span></div><div class="k">Performance</div></div>
+          </div>
+          <div class="chart-wrap">
+            <svg class="chart-svg" viewBox="0 0 560 160" preserveAspectRatio="none">
+              <defs>
+                <linearGradient id="areaGrad" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="#1DE074" stop-opacity="0.32"/>
+                  <stop offset="100%" stop-color="#1DE074" stop-opacity="0"/>
+                </linearGradient>
+              </defs>
+              <g class="chart-grid">
+                <line x1="0" y1="40" x2="560" y2="40"/>
+                <line x1="0" y1="80" x2="560" y2="80"/>
+                <line x1="0" y1="120" x2="560" y2="120"/>
+              </g>
+              <path class="area-fill" d="M0,150 L0,140 C40,135 60,120 90,110 C130,96 150,70 200,58 C250,46 270,30 320,26 C360,23 390,34 430,44 C470,54 500,72 560,60 L560,160 L0,160 Z"/>
+              <path class="area-line scan" d="M0,140 C40,135 60,120 90,110 C130,96 150,70 200,58 C250,46 270,30 320,26 C360,23 390,34 430,44 C470,54 500,72 560,60"/>
+              <circle class="pulse-dot" cx="560" cy="60" r="4.5"/>
+            </svg>
+          </div>
+        </div>
+        <!-- alerts -->
+        <div class="hp-card">
+          <div class="hp-head">
+            <span class="t">Alertas</span>
+            <span class="s">ÚLTIMAS 24H</span>
+          </div>
+          <div class="hp-alerts">
+            <div class="alert-row">
+              <div class="ic err">!</div>
+              <div class="txt"><div class="l1">Inversor offline</div><div class="l2">Usina Boa Vista · string 3</div></div>
+              <div class="time">14:02</div>
+            </div>
+            <div class="alert-row">
+              <div class="ic warn">⚠</div>
+              <div class="txt"><div class="l1">Geração 22% abaixo</div><div class="l2">Usina Recife Centro</div></div>
+              <div class="time">11:47</div>
+            </div>
+            <div class="alert-row">
+              <div class="ic ok">✓</div>
+              <div class="txt"><div class="l1">Crédito injetado</div><div class="l2">18 UCs · ciclo fechado</div></div>
+              <div class="time">08:30</div>
+            </div>
+            <div class="alert-row">
+              <div class="ic ok">✓</div>
+              <div class="txt"><div class="l1">Fatura importada</div><div class="l2">Neoenergia · 42 contas</div></div>
+              <div class="time">06:15</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- ===== TRUST ===== -->
+<div class="trust">
+  <div class="wrap trust-inner">
+    <span class="trust-label">Integrado de ponta a ponta</span>
+    <div class="trust-logos">
+      <span><b>Concessionárias:</b> Neoenergia · Energisa · Equatorial · Enel · CPFL</span>
+      <span><b>Inversores:</b> Growatt · Fronius · Sungrow · Huawei · Deye</span>
+    </div>
+  </div>
+</div>
+
+<!-- ===== MONITORING ===== -->
+<section id="monitoramento">
+  <div class="grid-bg" style="opacity:0.4"></div>
+  <div class="wrap" style="position:relative;z-index:2;">
+    <div class="section-head">
+      <div>
+        <span class="sec-tag">01 — Monitoramento</span>
+        <h2>Cada kWh, <span class="serif-i">visível</span> no segundo em que nasce.</h2>
+      </div>
+      <div class="desc">
+        Conecte qualquer inversor e veja geração, performance e saúde de todas as usinas em um só painel —
+        da microgeração no telhado de casa à usina de investimento de megawatts. Falhou? Você sabe antes do cliente ligar.
+      </div>
+    </div>
+
+    <div class="mon">
+      <div class="mon-visual">
+        <div class="corner-glow"></div>
+        <div class="mon-stat-row">
+          <div class="mon-stat"><div class="k">Potência instantânea</div><div class="v green">847,3 kW</div></div>
+          <div class="mon-stat"><div class="k">Energia hoje</div><div class="v">4.218 kWh</div></div>
+          <div class="mon-stat"><div class="k">Usinas online</div><div class="v">23 / 24</div></div>
+        </div>
+        <div class="mon-bars" id="monBars"></div>
+      </div>
+      <div>
+        <span class="mono" style="color:var(--green-l)">TEMPO REAL · MULTI-INVERSOR</span>
+        <h3>Um painel para todo o portfólio.</h3>
+        <p class="body">
+          O Helion lê os dados direto dos inversores e consolida tudo em uma visão única. Sem trocar de portal,
+          sem login por fabricante. Curva de geração, comparativo histórico e índice de performance (PR) por usina.
+        </p>
+        <ul class="mon-feat-list">
+          <li>
+            <span class="ic">◷</span>
+            <div><div class="ft">Geração ao vivo, atualizada a cada minuto</div><div class="fd">Acompanhe a curva do dia e compare com o esperado para o clima e a estação.</div></div>
+          </li>
+          <li>
+            <span class="ic">⚇</span>
+            <div><div class="ft">Detecção de falha e queda de performance</div><div class="fd">String offline, inversor parado, sujeira no painel — o sistema identifica e classifica a causa.</div></div>
+          </li>
+          <li>
+            <span class="ic">⊞</span>
+            <div><div class="ft">Multi-fabricante, sem amarras</div><div class="fd">Growatt, Fronius, Sungrow, Huawei, Deye e mais — todos no mesmo lugar.</div></div>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== WHATSAPP ALERTS ===== -->
+<section id="alertas" style="background:var(--bg-1);border-top:1px solid var(--line);border-bottom:1px solid var(--line);">
+  <div class="wrap">
+    <div class="wa">
+      <div class="phone">
+        <div class="wa-screen">
+          <div class="wa-head">
+            <div class="av"><svg width="20" height="20"><use href="#helion-mark"/></svg></div>
+            <div><div class="nm">Helion Alertas</div><div class="st">online agora</div></div>
+          </div>
+          <div class="wa-body">
+            <div class="wa-msg alert">
+              <div class="mh r">🔴 Falha detectada</div>
+              Inversor <b>offline</b> na <b>Usina Boa Vista</b>.<br/>
+              <span class="mono-sm">String 3 · sem geração há 38 min</span>
+              <div class="tm">14:02 ✓✓</div>
+            </div>
+            <div class="wa-msg alert">
+              <div class="mh r">⚠️ Performance baixa</div>
+              Geração <b>22% abaixo</b> do esperado na Usina Recife Centro.
+              <span class="mono-sm">Possível sujeira nos módulos</span>
+              <div class="tm">11:47 ✓✓</div>
+            </div>
+            <div class="wa-msg ok">
+              <div class="mh g">✅ Tudo certo</div>
+              Crédito injetado em <b>18 unidades</b>. Ciclo de compensação fechado.
+              <div class="tm">08:30 ✓✓</div>
+            </div>
+            <div class="wa-msg ok">
+              <div class="mh g">💰 Boleto enviado</div>
+              42 assinantes faturados. <b>R$ 38.420</b> em cobrança gerada.
+              <div class="tm">06:15 ✓✓</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <span class="sec-tag">02 — Alertas no WhatsApp</span>
+        <h3 style="font-size:clamp(32px,4vw,52px);letter-spacing:-0.035em;line-height:1.0;font-weight:500;margin:18px 0 18px;">
+          A usina te avisa <span class="serif-i" style="color:var(--green-l)">antes</span> do cliente reclamar.
+        </h3>
+        <p style="font-size:17px;color:var(--ink-2);line-height:1.55;margin:0;">
+          Nada de abrir o sistema para descobrir um problema. O Helion manda o alerta certo, pra pessoa certa, no
+          canal que todo mundo já usa. Integrador e cliente final recebem só o que importa.
+        </p>
+        <ul class="wa-points">
+          <li><span class="dot"></span><div><b>Falhas em tempo real</b> — inversor offline, string parada ou queda de geração viram mensagem na hora.</div></li>
+          <li><span class="dot"></span><div><b>Avisos para o cliente final</b> — boleto disponível, crédito injetado, economia do mês.</div></li>
+          <li><span class="dot"></span><div><b>Regras configuráveis</b> — você define limites, destinatários e o que dispara cada alerta.</div></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== END CLIENT ===== -->
+<section id="cliente">
+  <div class="wrap">
+    <div class="section-head">
+      <div>
+        <span class="sec-tag">03 — Experiência do cliente final</span>
+        <h2>Seu cliente <span class="serif-i">finalmente</span> enxerga a economia.</h2>
+      </div>
+      <div class="desc">
+        Um portal e app white-label com a sua marca. O dono da usina residencial e o assinante de créditos
+        acompanham geração diária, injeção de crédito nas UCs e a fatura analisada automaticamente — direto do portal da concessionária.
+      </div>
+    </div>
+
+    <div class="ec-grid">
+      <div class="ec-card">
+        <div class="ec-ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#1DE074" stroke-width="2"><path d="M3 18l4-5 3 3 5-7 6 9" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <h3>Geração diária</h3>
+        <p>Quanto a usina produziu hoje, na semana e no mês — com a curva hora a hora e comparação com o histórico.</p>
+        <div class="ec-demo">
+          <div class="spark">
+            <div class="sb" style="height:18%"></div><div class="sb" style="height:30%"></div>
+            <div class="sb" style="height:48%"></div><div class="sb" style="height:66%"></div>
+            <div class="sb peak" style="height:92%"></div><div class="sb peak" style="height:88%"></div>
+            <div class="sb" style="height:70%"></div><div class="sb" style="height:54%"></div>
+            <div class="sb" style="height:36%"></div><div class="sb" style="height:22%"></div>
+          </div>
+        </div>
+      </div>
+      <div class="ec-card">
+        <div class="ec-ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#1DE074" stroke-width="2"><path d="M12 3v18M5 10l7-7 7 7" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <h3>Injeção de crédito</h3>
+        <p>Veja o crédito de energia injetado em cada unidade consumidora, ciclo a ciclo, com saldo e validade de 60 meses.</p>
+        <div class="ec-demo">
+          <div class="inj-flow">
+            <div class="inj-node"><div class="n">+612</div><div class="l">UC Casa</div></div>
+            <span class="inj-arrow">→</span>
+            <div class="inj-node"><div class="n">+318</div><div class="l">UC Loja</div></div>
+            <span class="inj-arrow">→</span>
+            <div class="inj-node"><div class="n">+204</div><div class="l">UC Sítio</div></div>
+          </div>
+        </div>
+      </div>
+      <div class="ec-card">
+        <div class="ec-ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#1DE074" stroke-width="2"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M9 8h6M9 12h6M9 16h3" stroke-linecap="round"/></svg></div>
+        <h3>Fatura automática</h3>
+        <p>A conta de luz é lida direto do portal da concessionária e analisada sozinha — consumo, compensação e o quanto foi economizado.</p>
+        <div class="ec-demo">
+          <div class="mini-bill">
+            <div class="mb-row"><span class="lbl">Consumo</span><span class="val">438 kWh</span></div>
+            <div class="mb-row"><span class="lbl">Compensado</span><span class="val mb-credit">−402 kWh</span></div>
+            <div class="mb-row"><span class="lbl">Sem o Helion</span><span class="val">R$ 421,90</span></div>
+            <div class="mb-row tot"><span class="lbl">Fatura final</span><span class="val">R$ 64,10</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== BILLING / CREDIT SELLER ===== -->
+<section id="cobranca" style="background:var(--bg-1);border-top:1px solid var(--line);border-bottom:1px solid var(--line);">
+  <div class="wrap">
+    <div class="bill-split">
+      <div>
+        <span class="sec-tag">04 — Gestão &amp; cobrança</span>
+        <h3 style="font-size:clamp(32px,4vw,52px);letter-spacing:-0.035em;line-height:1.0;font-weight:500;margin:18px 0 18px;">
+          Quem vende crédito, <span class="serif-i" style="color:var(--green-l)">cobra sem dor.</span>
+        </h3>
+        <p style="font-size:17px;color:var(--ink-2);line-height:1.55;margin:0 0 32px;">
+          Toda a operação financeira da usina por assinatura em um lugar só: cadastro de clientes, rateio de cotas,
+          emissão de boleto, NFS-e e controle de inadimplência. O Helion fecha o mês enquanto você dorme.
+        </p>
+        <div class="hero-ctas" style="justify-content:flex-start;">
+          <a href="#planos" class="btn btn-green">Ver planos</a>
+          <a href="#screens" class="btn btn-ghost arrow">Ver o produto</a>
+        </div>
+      </div>
+      <div class="bill-feats">
+        <div class="bill-feat">
+          <div class="bi"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#D5FF3A" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6" stroke-linecap="round"/></svg></div>
+          <h4>CRM de clientes</h4>
+          <p>Cadastro, cotas, contratos e histórico de relacionamento de cada beneficiário e assinante.</p>
+        </div>
+        <div class="bill-feat">
+          <div class="bi"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#D5FF3A" stroke-width="2"><rect x="3" y="6" width="18" height="13" rx="2"/><path d="M3 10h18" stroke-linecap="round"/></svg></div>
+          <h4>Boleto &amp; PIX</h4>
+          <p>Cobrança individualizada gerada e enviada automaticamente a cada ciclo de faturamento.</p>
+        </div>
+        <div class="bill-feat">
+          <div class="bi"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#D5FF3A" stroke-width="2"><path d="M4 4h16v12H4z"/><path d="M8 20h8M12 16v4" stroke-linecap="round"/></svg></div>
+          <h4>NFS-e automática</h4>
+          <p>Emissão fiscal integrada à prefeitura, vinculada à cobrança de cada cliente, sem digitação.</p>
+        </div>
+        <div class="bill-feat">
+          <div class="bi"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#D5FF3A" stroke-width="2"><path d="M3 17l5-5 4 4 8-9" stroke-linecap="round" stroke-linejoin="round"/><path d="M16 7h5v5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          <h4>Inadimplência sob controle</h4>
+          <p>Régua de cobrança, alertas de vencimento e visão de recebíveis por usina e por cliente.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== AUDIENCE SPECTRUM ===== -->
+<section id="audiencia">
+  <div class="wrap">
+    <div class="section-head">
+      <div>
+        <span class="sec-tag">05 — Para quem</span>
+        <h2>Do telhado de casa <span class="serif-i">à usina</span> de megawatts.</h2>
+      </div>
+      <div class="desc">
+        A mesma plataforma escala com você. Comece monitorando uma usina residencial e cresça até gerir
+        portfólios de investimento com centenas de unidades consumidoras.
+      </div>
+    </div>
+
+    <div class="spectrum">
+      <div class="spec-col">
+        <div class="scale-bar" style="background:linear-gradient(90deg,var(--green-l),transparent);width:25%"></div>
+        <span class="cap">Residencial</span>
+        <h3>Dono de usina em casa</h3>
+        <p>Monitora a própria geração, vê a economia na fatura e recebe alerta se algo parar de funcionar.</p>
+        <div class="size">2–10 <span class="u">kWp</span></div>
+      </div>
+      <div class="spec-col">
+        <div class="scale-bar" style="background:linear-gradient(90deg,var(--green-l),transparent);width:50%"></div>
+        <span class="cap">Comercial</span>
+        <h3>Integrador &amp; comércio</h3>
+        <p>Oferece monitoramento como serviço aos clientes instalados e gerencia a carteira inteira num painel.</p>
+        <div class="size">10–500 <span class="u">kWp</span></div>
+      </div>
+      <div class="spec-col">
+        <div class="scale-bar" style="background:linear-gradient(90deg,var(--neon),transparent);width:75%"></div>
+        <span class="cap">Geração distribuída</span>
+        <h3>Operador de GD</h3>
+        <p>Rateia créditos entre dezenas de UCs, fatura assinantes e concilia tudo com a concessionária.</p>
+        <div class="size">0,5–5 <span class="u">MWp</span></div>
+      </div>
+      <div class="spec-col">
+        <div class="scale-bar" style="background:linear-gradient(90deg,var(--neon),transparent);width:100%"></div>
+        <span class="cap">Investimento</span>
+        <h3>Fundo &amp; holding</h3>
+        <p>Acompanha rentabilidade, performance e recebíveis de grandes usinas como ativo financeiro.</p>
+        <div class="size">5+ <span class="u">MWp</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== SHOWCASE ===== -->
+<section id="screens" style="background:var(--bg-1);border-top:1px solid var(--line);border-bottom:1px solid var(--line);">
+  <div class="wrap">
+    <div class="section-head">
+      <div>
+        <span class="sec-tag">06 — Por dentro do produto</span>
+        <h2>Não é mockup. <span class="serif-i">É o Helion</span> em produção.</h2>
+      </div>
+      <div class="desc">
+        Capturas reais da plataforma — com dados anonimizados para preservar a privacidade dos clientes
+        que já operam no Helion.
+      </div>
+    </div>
+    <div class="showcase-grid">
+      <div class="shot tall">
+        <div class="shot-meta"><span class="t">Carteira de clientes</span><span class="k">/customers</span></div>
+        <div class="shot-image"><img src="assets/product-clients.png" alt="Carteira de clientes anonimizada" /></div>
+      </div>
+      <div class="shot">
+        <div class="shot-meta"><span class="t">Contas de energia</span><span class="k">/bills</span></div>
+        <div class="shot-image"><img src="assets/product-bills.png" alt="Contas de energia anonimizadas" /></div>
+      </div>
+      <div class="shot">
+        <div class="shot-meta"><span class="t">Integrações</span><span class="k">/integrations</span></div>
+        <div class="shot-image"><img src="assets/product-integrations.png" alt="Página de integrações" /></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== HOW IT WORKS ===== -->
+<section id="funcionamento">
+  <div class="wrap">
+    <div class="section-head">
+      <div>
+        <span class="sec-tag">07 — Como funciona</span>
+        <h2>Conecte uma vez. <span class="serif-i">Roda</span> pra sempre.</h2>
+      </div>
+      <div class="desc">
+        Do pareamento do inversor ao boleto do assinante, o Helion automatiza o ciclo inteiro. Você configura,
+        ele opera — e te avisa só quando precisa de você.
+      </div>
+    </div>
+    <div class="flow-grid">
+      <div class="flow-step"><div class="sn">PASSO 01</div><div class="marker">1</div><h4>Conecte os inversores</h4><p>Pareie as usinas e comece a ver geração em tempo real em minutos.</p></div>
+      <div class="flow-step"><div class="sn">PASSO 02</div><div class="marker">2</div><h4>Integre a concessionária</h4><p>O Helion baixa as faturas e lê geração e compensação automaticamente.</p></div>
+      <div class="flow-step"><div class="sn">PASSO 03</div><div class="marker">3</div><h4>Cadastre UCs e cotas</h4><p>Defina os beneficiários e como os créditos são distribuídos entre eles.</p></div>
+      <div class="flow-step"><div class="sn">PASSO 04</div><div class="marker">4</div><h4>Ative alertas e cobrança</h4><p>Configure os disparos no WhatsApp e a régua de boleto e NFS-e.</p></div>
+      <div class="flow-step"><div class="sn">PASSO 05</div><div class="marker">5</div><h4>Opere no automático</h4><p>Monitoramento, faturamento e relatórios rodando — você só acompanha.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== PLANS ===== -->
+<section id="planos" style="background:var(--bg-1);border-top:1px solid var(--line);">
+  <div class="wrap">
+    <div class="section-head">
+      <div>
+        <span class="sec-tag">08 — Planos</span>
+        <h2>Comece de graça. <span class="serif-i">Escale</span> sem susto.</h2>
+      </div>
+      <div class="desc">
+        Monitore suas primeiras usinas sem custo e ative a gestão de créditos e cobrança quando precisar.
+        Setup, migração e onboarding inclusos em qualquer plano.
+      </div>
+    </div>
+    <div class="plans">
+      <div class="plan">
+        <div class="ptag">Plano Monitor</div>
+        <h3>Monitor</h3>
+        <div class="sub">Monitoramento puro, pra começar.</div>
+        <div class="price">R$ 197 <span class="per">/mês</span></div>
+        <div class="cap">Até 10 usinas · alertas ilimitados</div>
+        <ul>
+          <li>Monitoramento multi-inversor ao vivo</li>
+          <li>Alertas de falha no WhatsApp</li>
+          <li>Portal do cliente white-label</li>
+          <li>Geração diária e histórico</li>
+          <li>Relatório de performance</li>
+        </ul>
+        <a href="#" class="btn btn-ghost">Começar grátis</a>
+      </div>
+      <div class="plan featured">
+        <span class="badge-pop">★ Mais escolhido</span>
+        <div class="ptag">Plano Operação</div>
+        <h3>Operação</h3>
+        <div class="sub">Monitoramento + créditos + cobrança.</div>
+        <div class="price">R$ 497 <span class="per">/mês</span></div>
+        <div class="cap">Até 250 UCs · até 25 usinas</div>
+        <ul>
+          <li>Tudo do plano Monitor</li>
+          <li>Download automático de faturas</li>
+          <li>Rateio de créditos e gestão de UCs</li>
+          <li>Boleto, PIX e NFS-e automáticos</li>
+          <li>CRM e régua de inadimplência</li>
+          <li>Suporte prioritário WhatsApp</li>
+        </ul>
+        <a href="#" class="btn btn-neon">Começar 14 dias grátis</a>
+      </div>
+      <div class="plan">
+        <div class="ptag">Plano Investidor</div>
+        <h3>Investidor</h3>
+        <div class="sub">Pra grandes usinas e portfólios.</div>
+        <div class="price" style="font-size:34px;">Sob consulta</div>
+        <div class="cap">UCs e usinas ilimitadas</div>
+        <ul>
+          <li>Tudo do plano Operação</li>
+          <li>Dashboard de rentabilidade</li>
+          <li>API e white-label completo</li>
+          <li>Multioperador e hierarquia de acesso</li>
+          <li>SLA e gerente de conta dedicado</li>
+        </ul>
+        <a href="#" class="btn btn-ghost">Falar com vendas</a>
+      </div>
+    </div>
+    <p class="plans-note">Preços indicativos sujeitos a ajuste por volume. Desconto progressivo para 500+ UCs. Setup e migração gratuitos.</p>
+  </div>
+</section>
+
+<!-- ===== FAQ ===== -->
+<section id="faq">
+  <div class="wrap">
+    <div class="section-head">
+      <div>
+        <span class="sec-tag">09 — Dúvidas</span>
+        <h2>Pergunte <span class="serif-i">sem medo.</span></h2>
+      </div>
+      <div class="desc">
+        Não achou sua dúvida? Fale com o time no WhatsApp <strong>(81) 9 9999&#x2011;9999</strong>
+        ou escreva para <strong>contato@helionapp.com.br</strong>.
+      </div>
+    </div>
+    <div class="faq">
+      <details open>
+        <summary>Quais inversores o Helion monitora?</summary>
+        <p>Os principais do mercado — Growatt, Fronius, Sungrow, Huawei, Deye e outros. Novos fabricantes são adicionados conforme demanda. Da microgeração residencial à usina de megawatts.</p>
+      </details>
+      <details>
+        <summary>Como funcionam os alertas no WhatsApp?</summary>
+        <p>Você define as regras (queda de geração, inversor offline, vencimento de boleto) e quem recebe cada uma. O Helion dispara a mensagem certa para o integrador ou para o cliente final, automaticamente.</p>
+      </details>
+      <details>
+        <summary>O cliente final precisa instalar algo?</summary>
+        <p>Não. Ele acessa um portal e app white-label com a sua marca, onde acompanha geração, créditos e faturas. Tudo direto, sem configuração do lado dele.</p>
+      </details>
+      <details>
+        <summary>Funciona com qualquer concessionária?</summary>
+        <p>Sim, o Helion opera com todas as distribuidoras do Brasil. Para Neoenergia PE (CELPE) a integração é nativa, com leitura automática de fatura e compensação.</p>
+      </details>
+      <details>
+        <summary>Dá pra usar só o monitoramento?</summary>
+        <p>Dá. O plano Monitor entrega monitoramento, alertas e portal do cliente. Quando quiser, ative créditos e cobrança migrando para o plano Operação — sem retrabalho.</p>
+      </details>
+      <details>
+        <summary>Quanto tempo para começar a operar?</summary>
+        <p>O monitoramento começa em minutos após parear os inversores. A operação financeira completa, com migração de dados e onboarding gratuitos, em 3 a 7 dias úteis.</p>
+      </details>
+    </div>
+  </div>
+</section>
+
+<!-- ===== CTA ===== -->
+<section class="cta">
+  <div class="cta-aura"></div>
+  <div class="wrap">
+    <span class="sec-tag" style="justify-content:center;">10 — Próximo passo</span>
+    <h2>O sol não para. <span class="hl">Sua operação também não.</span></h2>
+    <p>14 dias grátis. Conecte uma usina hoje e veja a geração ao vivo em minutos. Sem cartão de crédito.</p>
+    <div class="hero-ctas">
+      <a class="btn btn-neon" href="#">Criar conta agora</a>
+      <a class="btn btn-ghost arrow" href="#">Agendar demonstração</a>
+    </div>
+  </div>
+</section>
+
+<!-- ===== FOOTER ===== -->
+<footer>
+  <div class="wrap">
+    <div class="foot-grid">
+      <div class="foot-col">
+        <a class="logo" href="#" style="margin-bottom:8px;"><svg class="mark" style="color:var(--white)"><use href="#helion-mark"/></svg><span class="word">helion</span></a>
+        <p>Monitoramento e gestão de usinas solares para integradores e operadores — da residência à grande usina de investimento. Feito em Pernambuco, para o Brasil.</p>
+      </div>
+      <div class="foot-col">
+        <h4>Produto</h4>
+        <ul>
+          <li><a href="#monitoramento">Monitoramento</a></li>
+          <li><a href="#alertas">Alertas WhatsApp</a></li>
+          <li><a href="#cliente">Cliente final</a></li>
+          <li><a href="#cobranca">Cobrança</a></li>
+          <li><a href="#planos">Planos</a></li>
+        </ul>
+      </div>
+      <div class="foot-col">
+        <h4>Empresa</h4>
+        <ul>
+          <li><a href="#">Sobre</a></li>
+          <li><a href="#">Parceiros</a></li>
+          <li><a href="#">Blog</a></li>
+          <li><a href="#">Contato</a></li>
+        </ul>
+      </div>
+      <div class="foot-col">
+        <h4>Legal</h4>
+        <ul>
+          <li><a href="#">Termos de uso</a></li>
+          <li><a href="#">Privacidade</a></li>
+          <li><a href="#">LGPD</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <span>© 2026 Helion · helionapp.com.br · Todos os direitos reservados.</span>
+      <span class="mono">Made in Pernambuco · Brasil</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // Animated generation bars in monitoring visual
+  (function () {
+    const host = document.getElementById('monBars');
+    if (!host) return;
+    const heights = [28, 42, 55, 70, 82, 90, 96, 88, 78, 64, 52, 40, 50, 66, 80, 92, 85, 72, 58, 44];
+    heights.forEach((h, i) => {
+      const b = document.createElement('div');
+      b.className = 'bar';
+      b.style.height = '6px';
+      host.appendChild(b);
+      setTimeout(() => { b.style.transition = 'height 0.6s cubic-bezier(.2,.8,.2,1)'; b.style.height = h + '%'; }, 200 + i * 45);
+    });
+  })();
+</script>
+
+</body>
+</html>

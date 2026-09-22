@@ -1,0 +1,503 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Helion — Monitoramento e gestão de energia solar</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700;800&family=Geist+Mono:wght@400;500;600&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg:#06080A; --bg-1:#0B0F12; --bg-2:#11161A; --bg-3:#181F24; --panel:#0E1316;
+    --line:#1E262C; --line-2:#2A343B; --white:#F3F6F4; --ink-2:#9BA7AD; --ink-3:#66727A;
+    --green:#00C853; --green-d:#009C3B; --green-l:#1DE074; --neon:#D5FF3A; --neon-2:#C2F02A;
+    --lilac:#B49BF0; --red:#FF4D5E; --orange:#FF9F2E;
+    --max:1280px; --r-sm:8px; --r-md:14px; --r-lg:20px; --r-xl:32px;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  html, body { margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--white); font-family: "Geist", system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif; font-size: 16px; line-height: 1.5; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+  ::selection { background: var(--neon); color: #06080A; }
+  a { color: inherit; text-decoration: none; }
+  img { display: block; max-width: 100%; }
+  .wrap { max-width: var(--max); margin: 0 auto; padding: 0 28px; }
+  .mono { font-family: "Geist Mono", ui-monospace, "SF Mono", Menlo, monospace; font-size: 12px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-3); }
+  .serif-i { font-family: "Instrument Serif", "Times New Roman", serif; font-style: italic; font-weight: 400; }
+  .grid-bg { position: absolute; inset: 0; z-index: 0; pointer-events: none; background-image: linear-gradient(color-mix(in oklab, var(--line) 60%, transparent) 1px, transparent 1px), linear-gradient(90deg, color-mix(in oklab, var(--line) 60%, transparent) 1px, transparent 1px); background-size: 56px 56px; -webkit-mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, #000 30%, transparent 75%); mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, #000 30%, transparent 75%); }
+
+  .logo { display: inline-flex; align-items: center; gap: 10px; font-weight: 600; letter-spacing: -0.03em; font-size: 22px; color: var(--white); }
+  .logo .mark { width: 30px; height: 30px; flex-shrink: 0; filter: drop-shadow(0 0 10px color-mix(in oklab, var(--neon) 45%, transparent)); }
+
+  .nav { position: sticky; top: 0; z-index: 60; background: color-mix(in oklab, var(--bg) 78%, transparent); backdrop-filter: saturate(150%) blur(14px); border-bottom: 1px solid var(--line); }
+  .nav-inner { display: flex; align-items: center; justify-content: space-between; height: 70px; }
+  .nav-links { display: flex; gap: 28px; }
+  .nav-links a { color: var(--ink-2); font-size: 14px; font-weight: 500; transition: color 0.15s; }
+  .nav-links a:hover { color: var(--white); }
+  .nav-cta { display: flex; gap: 10px; align-items: center; }
+
+  .btn { display: inline-flex; align-items: center; gap: 8px; padding: 12px 20px; border-radius: 999px; font-size: 14px; font-weight: 600; letter-spacing: -0.005em; border: 1px solid transparent; cursor: pointer; transition: transform 0.15s ease, background 0.15s ease, color 0.15s, border-color 0.15s, box-shadow 0.2s; white-space: nowrap; font-family: inherit; }
+  .btn-neon { background: var(--neon); color: #06080A; }
+  .btn-neon:hover { background: var(--neon-2); transform: translateY(-1px); box-shadow: 0 10px 30px -8px color-mix(in oklab, var(--neon) 70%, transparent); }
+  .btn-ghost { background: transparent; color: var(--white); border-color: var(--line-2); }
+  .btn-ghost:hover { border-color: var(--ink-2); background: var(--bg-2); }
+  .arrow::after { content: "→"; margin-left: 4px; transition: transform 0.15s ease; }
+  .arrow:hover::after { transform: translateX(3px); }
+
+  /* HERO */
+  .hero { position: relative; padding: 84px 0 70px; overflow: hidden; }
+  .hero-aura { position: absolute; top: -300px; left: 50%; transform: translateX(-50%); width: 1100px; height: 700px; z-index: 0; pointer-events: none; background: radial-gradient(circle at 35% 40%, color-mix(in oklab, var(--green) 30%, transparent) 0%, transparent 55%), radial-gradient(circle at 70% 55%, color-mix(in oklab, var(--lilac) 20%, transparent) 0%, transparent 55%); filter: blur(60px); opacity: 0.7; }
+  .hero .wrap { position: relative; z-index: 2; }
+  .hero-top { text-align: center; max-width: 900px; margin: 0 auto; }
+  .eyebrow { display: inline-flex; align-items: center; gap: 10px; padding: 7px 16px; border: 1px solid var(--line-2); border-radius: 999px; background: color-mix(in oklab, var(--bg-2) 70%, transparent); font-size: 12px; margin-bottom: 28px; }
+  .eyebrow .live { width: 7px; height: 7px; border-radius: 50%; background: var(--green-l); animation: pulse 2s infinite; }
+  @keyframes pulse { 0% { box-shadow: 0 0 0 0 color-mix(in oklab, var(--green-l) 60%, transparent); } 70% { box-shadow: 0 0 0 8px transparent; } 100% { box-shadow: 0 0 0 0 transparent; } }
+  .hero h1 { font-size: clamp(40px, 5.6vw, 78px); line-height: 1.18; letter-spacing: -0.04em; font-weight: 500; margin: 0 0 22px; }
+  .hero h1 .hl-neon { color: var(--neon); }
+  .hero h1 .hl-green { color: var(--green-l); }
+  .hero p.lede { font-size: 19px; line-height: 1.5; color: var(--ink-2); max-width: 62ch; margin: 0 auto 34px; }
+  .hero-ctas { display: flex; gap: 12px; align-items: center; justify-content: center; flex-wrap: wrap; }
+
+  /* AUDIENCE SWITCH */
+  .switch-wrap { display: flex; justify-content: center; margin-top: 52px; }
+  .switch { display: inline-flex; gap: 4px; background: var(--bg-2); border: 1px solid var(--line-2); border-radius: 999px; padding: 5px; }
+  .switch button { border: none; background: transparent; color: var(--ink-2); font-family: inherit; font-size: 14px; font-weight: 600; padding: 11px 22px; border-radius: 999px; cursor: pointer; transition: all 0.2s; }
+  .switch button.active { background: var(--neon); color: #06080A; }
+
+  /* MATRIX */
+  section { padding: 108px 0; position: relative; }
+  .sec-tag { display: inline-flex; align-items: center; gap: 10px; font-family: "Geist Mono", monospace; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--neon); }
+  .sec-tag::before { content: ""; width: 24px; height: 1px; background: var(--neon); }
+  .head-center { text-align: center; max-width: 760px; margin: 0 auto 56px; display: flex; flex-direction: column; align-items: center; gap: 16px; }
+  .head-center h2 { font-size: clamp(34px, 4.2vw, 56px); letter-spacing: -0.036em; line-height: 1.03; font-weight: 500; margin: 0; }
+  .head-center h2 .serif-i { color: var(--green-l); }
+  .head-center p { color: var(--ink-2); font-size: 17px; line-height: 1.55; margin: 0; }
+
+  .matrix { display: grid; grid-template-columns: 180px 1fr 1fr; gap: 2px; background: var(--line); border: 1px solid var(--line); border-radius: var(--r-lg); overflow: hidden; }
+  .matrix > div { background: var(--bg-1); padding: 26px 24px; }
+  .matrix .corner { background: var(--bg-2); }
+  .matrix .col-head { display: flex; flex-direction: column; gap: 6px; justify-content: center; }
+  .matrix .col-head b { font-size: 16px; font-weight: 600; }
+  .matrix .col-head span { font-family: "Geist Mono", monospace; font-size: 11px; color: var(--ink-3); text-transform: uppercase; letter-spacing: 0.04em; }
+  .matrix .row-head { display: flex; align-items: center; background: var(--bg-2); }
+  .matrix .row-head b { font-size: 15px; font-weight: 600; line-height: 1.3; }
+  .matrix .cell { display: flex; flex-direction: column; gap: 10px; transition: background 0.2s; }
+  .matrix .cell:hover { background: var(--bg-2); }
+  .matrix .cell .plan-name { font-size: 19px; font-weight: 600; color: var(--green-l); letter-spacing: -0.01em; }
+  .matrix .cell p { font-size: 13.5px; color: var(--ink-2); margin: 0; line-height: 1.5; }
+  .matrix .cell .price { font-family: "Geist Mono", monospace; font-size: 13px; color: var(--neon); margin-top: 4px; }
+
+  /* PLANS */
+  .plan-group { display: none; }
+  .plan-group.active { display: block; }
+  .plans { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+  .plan { border: 1px solid var(--line-2); background: linear-gradient(180deg, var(--bg-1), var(--bg)); border-radius: var(--r-lg); padding: 34px; display: flex; flex-direction: column; position: relative; transition: transform 0.2s, border-color 0.2s; }
+  .plan:hover { transform: translateY(-4px); }
+  .plan.featured { border-color: color-mix(in oklab, var(--neon) 50%, transparent); background: linear-gradient(180deg, var(--bg-2), var(--bg-1)); box-shadow: 0 30px 70px -30px color-mix(in oklab, var(--green) 40%, transparent); }
+  .plan .ptag { font-family: "Geist Mono", monospace; font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-3); margin-bottom: 22px; padding-right: 0; }
+  .plan.featured .ptag { color: var(--neon); }
+  .badge-pop { display: inline-block; position: static; background: var(--neon); color: #06080A; padding: 5px 12px; border-radius: 999px; font-size: 11px; font-weight: 700; white-space: nowrap; margin-bottom: 14px; }
+  .plan h3 { font-size: 27px; font-weight: 600; letter-spacing: -0.02em; margin: 0 0 8px; }
+  .plan .dor { font-size: 14px; color: var(--ink-2); line-height: 1.55; margin: 0 0 24px; padding-bottom: 24px; border-bottom: 1px solid var(--line); }
+  .plan .dor b { color: var(--white); font-weight: 600; }
+  .plan .price { font-size: 44px; letter-spacing: -0.03em; font-weight: 500; margin-bottom: 2px; line-height: 1; }
+  .plan .price .per { font-size: 14px; color: var(--ink-3); font-weight: 400; }
+  .plan .cap { font-size: 13px; margin: 14px 0 22px; color: var(--ink-3); }
+  .plan ul { list-style: none; padding: 0; margin: 0 0 26px; flex: 1; }
+  .plan ul li { padding: 7px 0; font-size: 14px; display: flex; gap: 12px; align-items: flex-start; color: var(--ink-2); }
+  .plan ul li::before { content: "✓"; color: var(--green-l); font-weight: 700; flex-shrink: 0; font-family: "Geist Mono", monospace; }
+  .plan.featured ul li::before { color: var(--neon); }
+  .plan .btn { justify-content: center; width: 100%; }
+  .plan .anchor { margin-top: 16px; font-size: 12px; color: var(--ink-3); line-height: 1.5; background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; }
+  .plan .anchor b { color: var(--ink-2); }
+
+  /* B2B degressividade */
+  .degress-wrap { margin-top: 40px; display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  .degress { background: var(--panel); border: 1px solid var(--line); border-radius: var(--r-lg); padding: 26px 28px; }
+  .degress h4 { font-size: 15px; font-weight: 600; margin: 0 0 4px; }
+  .degress .sub { font-family: "Geist Mono", monospace; font-size: 11px; color: var(--ink-3); text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 18px; display: block; }
+  .degress table { width: 100%; border-collapse: collapse; }
+  .degress td { padding: 10px 0; font-size: 13.5px; border-top: 1px solid var(--line); }
+  .degress tr:first-child td { border-top: none; }
+  .degress td:first-child { color: var(--ink-2); }
+  .degress td:last-child { text-align: right; font-family: "Geist Mono", monospace; color: var(--green-l); font-weight: 500; }
+  .degress .note { margin-top: 14px; font-size: 12px; color: var(--ink-3); line-height: 1.5; }
+
+  .plans-note { text-align: center; color: var(--ink-3); font-size: 13px; margin-top: 30px; }
+
+  /* WHY / LACUNA */
+  .why-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; }
+  .why-card { background: linear-gradient(180deg, var(--bg-2), var(--bg-1)); border: 1px solid var(--line); border-radius: var(--r-xl); padding: 40px; }
+  .why-card .stat { font-family: "Instrument Serif", serif; font-style: italic; font-size: 64px; color: var(--green-l); line-height: 1; margin-bottom: 16px; }
+  .why-card p { font-size: 16px; color: var(--ink-2); line-height: 1.6; margin: 0; }
+  .why h3 { font-size: clamp(30px, 3.6vw, 46px); letter-spacing: -0.032em; line-height: 1.04; font-weight: 500; margin: 0 0 20px; }
+  .why p.body { font-size: 17px; color: var(--ink-2); line-height: 1.55; margin: 0 0 24px; }
+  .why-points { list-style: none; padding: 0; margin: 0; }
+  .why-points li { display: flex; gap: 14px; align-items: flex-start; padding: 12px 0; border-top: 1px solid var(--line); font-size: 15px; color: var(--ink-2); }
+  .why-points li b { color: var(--white); font-weight: 600; }
+  .why-points li .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--neon); margin-top: 7px; flex-shrink: 0; }
+
+  /* FAQ */
+  .faq { display: grid; grid-template-columns: 1fr 1fr; border-top: 1px solid var(--line); border-left: 1px solid var(--line); border-radius: var(--r-lg); overflow: hidden; }
+  .faq details { padding: 26px 28px; border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); background: var(--bg-1); }
+  .faq details summary { list-style: none; cursor: pointer; font-size: 17px; font-weight: 600; letter-spacing: -0.01em; display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+  .faq details summary::-webkit-details-marker { display: none; }
+  .faq details summary::after { content: "+"; font-family: "Geist Mono", monospace; font-size: 20px; color: var(--green-l); transition: transform 0.2s ease; font-weight: 600; }
+  .faq details[open] summary::after { transform: rotate(45deg); }
+  .faq details p { margin: 14px 0 0; font-size: 14px; color: var(--ink-2); line-height: 1.6; max-width: 54ch; }
+
+  /* CTA */
+  .cta { text-align: center; padding: 150px 0 120px; position: relative; overflow: hidden; }
+  .cta-aura { position: absolute; inset: 0; z-index: 0; pointer-events: none; background: radial-gradient(circle at 30% 40%, color-mix(in oklab, var(--green) 24%, transparent), transparent 50%), radial-gradient(circle at 75% 55%, color-mix(in oklab, var(--lilac) 16%, transparent), transparent 50%); }
+  .cta .wrap { position: relative; z-index: 2; }
+  .cta h2 { font-size: clamp(46px, 6.6vw, 100px); letter-spacing: -0.045em; line-height: 0.95; font-weight: 500; margin: 22px auto 24px; max-width: 16ch; }
+  .cta h2 .hl { color: var(--neon); }
+  .cta p { color: var(--ink-2); font-size: 18px; max-width: 50ch; margin: 0 auto 38px; }
+
+  footer { border-top: 1px solid var(--line); padding: 40px 0 32px; }
+  .foot-bottom { display: flex; justify-content: space-between; align-items: center; gap: 20px; flex-wrap: wrap; font-size: 13px; color: var(--ink-3); }
+  .foot-links { display: flex; gap: 24px; flex-wrap: wrap; }
+  .foot-links a { color: var(--ink-2); }
+  .foot-links a:hover { color: var(--neon); }
+
+  @media (max-width: 1024px) {
+    .plans, .why-grid, .degress-wrap { grid-template-columns: 1fr; }
+    .matrix { grid-template-columns: 1fr; }
+    .matrix .row-head { display: none; }
+    .matrix .corner { display: none; }
+    .matrix .col-head { text-align: center; }
+    .faq { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 640px) {
+    .wrap { padding: 0 20px; }
+    .nav-links { display: none; }
+    section { padding: 76px 0; }
+    .foot-bottom { flex-direction: column; align-items: flex-start; }
+    .switch { flex-wrap: wrap; }
+  }
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="helion-mark" viewBox="0 0 100 100">
+      <path d="M50 7 L84.5 27 L84.5 73 L50 93 L15.5 73 L15.5 27 Z" fill="none" stroke="currentColor" stroke-width="6" stroke-linejoin="round"/>
+      <circle cx="50" cy="50" r="17.5" fill="#00C853"/>
+      <circle cx="50" cy="50" r="17.5" fill="none" stroke="#D5FF3A" stroke-width="2.4"/>
+    </symbol>
+  </defs>
+</svg>
+
+<!-- NAV -->
+<nav class="nav">
+  <div class="wrap nav-inner">
+    <a class="logo" href="#"><svg class="mark" style="color:var(--white)"><use href="#helion-mark"/></svg><span>helion</span></a>
+    <div class="nav-links">
+      <a href="#matriz">A plataforma</a>
+      <a href="#planos">Planos</a>
+      <a href="#porque">Por que existe</a>
+      <a href="#faq">FAQ</a>
+    </div>
+    <div class="nav-cta">
+      <a class="btn btn-ghost" href="#">Entrar</a>
+      <a class="btn btn-neon" href="#planos">Ver planos</a>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<header class="hero">
+  <div class="grid-bg"></div>
+  <div class="hero-aura"></div>
+  <div class="wrap">
+    <div class="hero-top">
+      <span class="eyebrow mono"><span class="live"></span>Monitoramento + gestão de energia solar</span>
+      <h1>Sua usina para de gerar <span class="hl-neon">e ninguém te avisa.</span><br/>O Helion <span class="hl-green serif-i">avisa.</span></h1>
+      <p class="lede">
+        Falhas silenciosas e créditos não compensados custam caro todo mês — e só aparecem quando a conta já chegou.
+        O Helion monitora sua usina em tempo real, alerta no WhatsApp e confere se a geração virou desconto na fatura.
+      </p>
+      <div class="hero-ctas">
+        <a href="#planos" class="btn btn-neon">Ver planos e preços</a>
+        <a href="#matriz" class="btn btn-ghost arrow">Entender a plataforma</a>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- MATRIX -->
+<section id="matriz">
+  <div class="wrap">
+    <div class="head-center">
+      <span class="sec-tag" style="justify-content:center;">Como a plataforma se organiza</span>
+      <h2>Duas perguntas. <span class="serif-i">Dois públicos.</span> Quatro planos.</h2>
+      <p>O Helion não tenta ser tudo para todos — ele resolve exatamente duas dores, para exatamente dois perfis de cliente.</p>
+    </div>
+
+    <div class="matrix">
+      <div class="corner"></div>
+      <div class="col-head"><b>"Minha usina está funcionando?"</b><span>Monitorar a geração</span></div>
+      <div class="col-head"><b>"A geração virou desconto na conta?"</b><span>Garantir a compensação</span></div>
+
+      <div class="row-head"><b>Dono de usina<br/>(pessoa física ou empresa)</b></div>
+      <div class="cell">
+        <span class="plan-name">Helion Monitor</span>
+        <p>Alerta no WhatsApp quando a usina falha — resolve descobrir semanas depois que parou de gerar.</p>
+      </div>
+      <div class="cell">
+        <span class="plan-name">Monitor + Fatura</span>
+        <p>Audita a fatura da concessionária e confere a compensação em todas as UCs.</p>
+      </div>
+
+      <div class="row-head"><b>Empresa que gerencia<br/>usinas de terceiros</b></div>
+      <div class="cell">
+        <span class="plan-name">Helion Integrador</span>
+        <p>Monitora a carteira de clientes num painel só e revende o app com a marca do integrador.</p>
+      </div>
+      <div class="cell">
+        <span class="plan-name">Helion Gestor</span>
+        <p>Audita a compensação de centenas de UCs beneficiárias e gerencia o rateio de créditos.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PLANS -->
+<section id="planos" style="background:var(--bg-1);border-top:1px solid var(--line);border-bottom:1px solid var(--line);">
+  <div class="wrap">
+    <div class="head-center">
+      <span class="sec-tag" style="justify-content:center;">Planos e preços</span>
+      <h2>Escolha pelo <span class="serif-i">seu perfil.</span></h2>
+      <p>Preços de entrada abertos. Acima do volume de entrada nos planos B2B, atendimento consultivo.</p>
+    </div>
+
+    <div class="switch-wrap">
+      <div class="switch">
+        <button id="btn-b2c" class="active">Tenho uma usina</button>
+        <button id="btn-b2b">Gerencio usinas de terceiros</button>
+      </div>
+    </div>
+
+    <div style="margin-top:52px;">
+      <!-- B2C -->
+      <div class="plan-group active" id="group-b2c">
+        <div class="plans">
+          <div class="plan">
+            <div class="ptag">Dono de usina · residencial ou comercial</div>
+            <h3>Helion Monitor</h3>
+            <p class="dor"><b>A dor:</b> você só descobre que a usina parou de gerar quando a conta chega alta — às vezes semanas de geração perdida.</p>
+            <div class="price">R$ 19,90 <span class="per">/mês</span></div>
+            <div class="cap">Comercial (até 3 usinas): R$ 34,90/mês · Anual com 2 meses grátis: R$ 199</div>
+            <ul>
+              <li>Monitoramento em tempo real</li>
+              <li>Alerta no WhatsApp quando a usina falha</li>
+              <li>Histórico de geração</li>
+              <li>Relatório mensal</li>
+              <li>14 dias de teste grátis</li>
+            </ul>
+            <a href="#" class="btn btn-ghost">Começar teste grátis</a>
+            <div class="anchor"><b>Por que este preço:</b> serviços regionais cobram ~R$ 39,90/mês com atendimento humano. Um app self-service custa cerca da metade.</div>
+          </div>
+
+          <div class="plan featured">
+            <span class="badge-pop">★ Recomendado</span>
+            <br/>
+            <div class="ptag">Dono de usina · 1 ou mais UCs compensando</div>
+            <h3>Monitor + Fatura</h3>
+            <p class="dor"><b>A dor:</b> erros de compensação da concessionária são comuns e invisíveis — crédito não aplicado, rateio errado, saldo expirando.</p>
+            <div class="price">R$ 39,90 <span class="per">/mês</span></div>
+            <div class="cap">Até 3 UCs · Comercial (até 6 UCs): R$ 69,90/mês · UC adicional: +R$ 7,90/mês · Anual com 2 meses grátis: R$ 399</div>
+            <ul>
+              <li>Tudo do plano Monitor</li>
+              <li>Integração com o portal da concessionária</li>
+              <li>Auditoria automática da compensação</li>
+              <li>Alertas de crédito a expirar</li>
+              <li>14 dias de teste grátis</li>
+            </ul>
+            <a href="#" class="btn btn-neon">Começar teste grátis</a>
+            <div class="anchor"><b>Por que este preço:</b> um único erro de compensação detectado (R$ 100–300/mês) paga o plano do ano inteiro.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- B2B -->
+      <div class="plan-group" id="group-b2b">
+        <div class="plans">
+          <div class="plan">
+            <div class="ptag">Integradores de energia solar</div>
+            <h3>Helion Integrador</h3>
+            <p class="dor"><b>A dor:</b> dezenas de clientes em portais de inversor diferentes, e um pós-venda que só gera custo.</p>
+            <div class="price">R$ 99 <span class="per">/mês</span></div>
+            <div class="cap">Até 25 usinas · central multi-inversor + alertas + relatórios de pós-venda</div>
+            <ul>
+              <li>Painel único para toda a carteira</li>
+              <li>Revenda do app aos seus clientes finais</li>
+              <li>Alertas de falha por usina</li>
+              <li>Relatórios de pós-venda</li>
+              <li>App white label: +R$ 199/mês</li>
+            </ul>
+            <a href="#" class="btn btn-ghost">Falar com o time</a>
+            <div class="anchor"><b>Por que este preço:</b> você compra no atacado (R$ 3,50/usina) e revende aos clientes por R$ 19,90 — com 100 usinas, ~R$ 1.640/mês de recorrência. O plano se paga sozinho.</div>
+          </div>
+
+          <div class="plan featured">
+            <span class="badge-pop">★ Gestão de créditos</span>
+            <br/>
+            <div class="ptag">Gestores de créditos / energia por assinatura</div>
+            <h3>Helion Gestor</h3>
+            <p class="dor"><b>A dor:</b> auditar centenas de faturas por mês na mão — baixar PDF, conferir compensação, ajustar rateio, cobrar o assinante. Não escala.</p>
+            <div class="price">R$ 249 <span class="per">/mês</span></div>
+            <div class="cap">Até 50 UCs beneficiárias · captura de faturas + auditoria por UC + gestão de rateio</div>
+            <ul>
+              <li>Auditoria automática por UC beneficiária</li>
+              <li>Gestão de rateio de créditos</li>
+              <li>Alertas de saldo a expirar</li>
+              <li>Add-on cobrança automática: R$ 1,50/fatura ou 1%</li>
+            </ul>
+            <a href="#" class="btn btn-neon">Falar com o time</a>
+            <div class="anchor"><b>Por que este preço:</b> cada UC auditada manualmente custa ~15–20 min de analista. Automatizar por R$ 3,90/UC custa menos que 5 minutos de mão de obra.</div>
+          </div>
+        </div>
+
+        <div class="degress-wrap">
+          <div class="degress">
+            <h4>Helion Integrador</h4>
+            <span class="sub">por usina monitorada</span>
+            <table>
+              <tr><td>Starter · até 25 usinas</td><td>R$ 99/mês fixo</td></tr>
+              <tr><td>26 a 100 usinas</td><td>R$ 3,50/usina</td></tr>
+              <tr><td>101 a 300 usinas</td><td>R$ 2,90/usina</td></tr>
+              <tr><td>Acima de 300</td><td>fale com a gente</td></tr>
+            </table>
+            <div class="note">Carteiras acima de 300 usinas: atendimento consultivo.</div>
+          </div>
+          <div class="degress">
+            <h4>Helion Gestor</h4>
+            <span class="sub">por UC beneficiária</span>
+            <table>
+              <tr><td>Base · até 50 UCs</td><td>R$ 249/mês fixo</td></tr>
+              <tr><td>51 a 200 UCs</td><td>R$ 3,90/UC</td></tr>
+              <tr><td>201 a 500 UCs</td><td>R$ 3,20/UC</td></tr>
+              <tr><td>Acima de 500</td><td>fale com a gente</td></tr>
+            </table>
+            <div class="note">Carteiras acima de 500 UCs: atendimento consultivo.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <p class="plans-note">Preços de entrada. Planos anuais com desconto disponíveis. Sem fidelidade nos planos B2C — cancele quando quiser.</p>
+  </div>
+</section>
+
+<!-- POR QUE / LACUNA -->
+<section id="porque">
+  <div class="wrap">
+    <div class="why-grid">
+      <div class="why-card">
+        <div class="stat">100%</div>
+        <p>dos apps de monitoramento hoje vendem pelo integrador, que repassa ao cliente final. Nenhum player brasileiro vende monitoramento direto e escalado ao dono da usina.</p>
+      </div>
+      <div>
+        <span class="sec-tag">Onde o Helion entra</span>
+        <h3>O consumidor final <span class="serif-i" style="color:var(--green-l)">estava esquecido.</span></h3>
+        <p class="body">
+          O mercado de gestão de geração distribuída sempre olhou para o integrador. O Helion nasce olhando também
+          para quem investiu na usina — e quer saber, sem intermediário, se ela está gerando o que deveria.
+        </p>
+        <ul class="why-points">
+          <li><span class="dot"></span><div><b>Preço de streaming</b> — R$ 19,90 é uma decisão que o dono da usina toma sozinho, sem precisar de aprovação.</div></li>
+          <li><span class="dot"></span><div><b>Paga pelo alerta, não pelo gráfico</b> — a tranquilidade de saber na hora se algo parou de funcionar.</div></li>
+          <li><span class="dot"></span><div><b>ROI comprovável</b> — um único erro de compensação detectado paga o plano do ano inteiro.</div></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section id="faq" style="background:var(--bg-1);border-top:1px solid var(--line);border-bottom:1px solid var(--line);">
+  <div class="wrap">
+    <div class="head-center">
+      <span class="sec-tag" style="justify-content:center;">Dúvidas</span>
+      <h2>Pergunte <span class="serif-i">sem medo.</span></h2>
+    </div>
+    <div class="faq">
+      <details open>
+        <summary>Qual plano é o certo pra mim?</summary>
+        <p>Se você tem uma usina (própria ou de investimento), comece pelo Monitor ou Monitor + Fatura. Se você gerencia usinas de terceiros como negócio, veja o Integrador (monitoramento + revenda) ou o Gestor (auditoria e rateio de créditos).</p>
+      </details>
+      <details>
+        <summary>Dá pra trocar de plano depois?</summary>
+        <p>Sim, a qualquer momento. Muitos clientes começam no Monitor e sobem para o Monitor + Fatura quando querem a auditoria automática da compensação.</p>
+      </details>
+      <details>
+        <summary>Como funciona o app white label do Integrador?</summary>
+        <p>Por +R$ 199/mês, o integrador oferece o Helion com a própria marca aos seus clientes finais — o pós-venda vira canal de receita recorrente.</p>
+      </details>
+      <details>
+        <summary>O que conta como "UC beneficiária" no plano Gestor?</summary>
+        <p>Cada unidade consumidora que recebe crédito rateado da usina gerida. O plano Gestor audita a compensação e o rateio de cada uma dessas UCs automaticamente.</p>
+      </details>
+      <details>
+        <summary>Minha carteira é maior que o topo da tabela. E agora?</summary>
+        <p>Carteiras grandes (300+ usinas ou 500+ UCs) entram em atendimento consultivo — fale com o time para uma proposta sob medida.</p>
+      </details>
+      <details>
+        <summary>Tem teste grátis?</summary>
+        <p>Sim, 14 dias grátis nos planos Monitor e Monitor + Fatura, sem cartão de crédito.</p>
+      </details>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta">
+  <div class="cta-aura"></div>
+  <div class="wrap">
+    <span class="sec-tag" style="justify-content:center;">Comece hoje</span>
+    <h2>Sua usina trabalha todo dia. <span class="hl">Você sabe o quanto ela rende?</span></h2>
+    <p>14 dias grátis nos planos para dono de usina. Fale com o time se você gerencia usinas de terceiros.</p>
+    <div class="hero-ctas">
+      <a class="btn btn-neon" href="#planos">Ver planos e preços</a>
+      <a class="btn btn-ghost arrow" href="#">Falar com o time</a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="wrap">
+    <div class="foot-bottom">
+      <a class="logo" href="#" style="font-size:18px;"><svg class="mark" style="color:var(--white);width:24px;height:24px;"><use href="#helion-mark"/></svg><span>helion</span></a>
+      <div class="foot-links">
+        <a href="#matriz">A plataforma</a>
+        <a href="#planos">Planos</a>
+        <a href="#faq">FAQ</a>
+        <a href="#">Contato</a>
+        <a href="#">LGPD</a>
+      </div>
+      <span>© 2026 Helion · Environ Energia e Tecnologia · Recife/PE</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+  const btnB2C = document.getElementById('btn-b2c');
+  const btnB2B = document.getElementById('btn-b2b');
+  const groupB2C = document.getElementById('group-b2c');
+  const groupB2B = document.getElementById('group-b2b');
+  btnB2C.addEventListener('click', () => {
+    btnB2C.classList.add('active'); btnB2B.classList.remove('active');
+    groupB2C.classList.add('active'); groupB2B.classList.remove('active');
+  });
+  btnB2B.addEventListener('click', () => {
+    btnB2B.classList.add('active'); btnB2C.classList.remove('active');
+    groupB2B.classList.add('active'); groupB2C.classList.remove('active');
+  });
+</script>
+
+</body>
+</html>

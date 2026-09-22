@@ -1,0 +1,396 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Entrar — Helion</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700;800&family=Geist+Mono:wght@400;500;600&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet" />
+<template id="__bundler_thumbnail" data-bg-color="#06080A">
+  <svg viewBox="0 0 1200 800" xmlns="http://www.w3.org/2000/svg">
+    <rect width="1200" height="800" fill="#06080A"/>
+    <g transform="translate(600 400)">
+      <path d="M0 -150 L130 -75 L130 75 L0 150 L-130 75 L-130 -75 Z" fill="none" stroke="#F3F6F4" stroke-width="22" stroke-linejoin="round"/>
+      <circle cx="0" cy="0" r="66" fill="#00C853"/>
+      <circle cx="0" cy="0" r="66" fill="none" stroke="#D5FF3A" stroke-width="9"/>
+    </g>
+    <text x="600" y="640" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-weight="600" font-size="60" fill="#F3F6F4" letter-spacing="-2">helion · entrar</text>
+  </svg>
+</template>
+<style>
+  :root {
+    --bg:#06080A; --bg-1:#0B0F12; --bg-2:#11161A; --bg-3:#181F24; --panel:#0E1316;
+    --line:#1E262C; --line-2:#2A343B; --white:#F3F6F4; --ink-2:#9BA7AD; --ink-3:#66727A;
+    --green:#00C853; --green-d:#009C3B; --green-l:#1DE074; --neon:#D5FF3A; --neon-2:#C2F02A;
+    --lilac:#B49BF0; --red:#FF4D5E; --orange:#FF9F2E;
+    --r-sm:8px; --r-md:14px; --r-lg:20px; --r-xl:28px;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; height: 100%; }
+  body { background: var(--bg); color: var(--white); font-family: "Geist", system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif; font-size: 16px; line-height: 1.5; -webkit-font-smoothing: antialiased; min-height: 100%; }
+  ::selection { background: var(--neon); color: #06080A; }
+  a { color: inherit; text-decoration: none; }
+  .mono { font-family: "Geist Mono", ui-monospace, Menlo, monospace; font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-3); }
+  .serif-i { font-family: "Instrument Serif", serif; font-style: italic; font-weight: 400; }
+
+  .page { display: grid; grid-template-columns: 1.05fr 1fr; min-height: 100vh; }
+
+  /* LEFT — brand / showcase */
+  .brand-side { position: relative; overflow: hidden; padding: 48px; display: flex; flex-direction: column; justify-content: space-between; border-right: 1px solid var(--line); background: linear-gradient(180deg, var(--bg-1), var(--bg)); }
+  .brand-side .aura { position: absolute; top: -200px; left: -120px; width: 760px; height: 620px; background: radial-gradient(circle at 40% 40%, color-mix(in oklab, var(--green) 26%, transparent), transparent 55%), radial-gradient(circle at 70% 60%, color-mix(in oklab, var(--lilac) 16%, transparent), transparent 55%); filter: blur(60px); z-index: 0; }
+  .grid-bg { position: absolute; inset: 0; z-index: 0; pointer-events: none; background-image: linear-gradient(color-mix(in oklab, var(--line) 60%, transparent) 1px, transparent 1px), linear-gradient(90deg, color-mix(in oklab, var(--line) 60%, transparent) 1px, transparent 1px); background-size: 48px 48px; -webkit-mask-image: radial-gradient(ellipse 80% 70% at 30% 30%, #000 20%, transparent 70%); mask-image: radial-gradient(ellipse 80% 70% at 30% 30%, #000 20%, transparent 70%); }
+  .brand-side > * { position: relative; z-index: 2; }
+  .logo { display: inline-flex; align-items: center; gap: 11px; font-weight: 600; letter-spacing: -0.03em; font-size: 22px; color: var(--white); }
+  .logo .mark { width: 30px; height: 30px; filter: drop-shadow(0 0 10px color-mix(in oklab, var(--neon) 40%, transparent)); }
+  .brand-copy h1 { font-size: clamp(32px, 3.4vw, 48px); letter-spacing: -0.035em; line-height: 1.0; font-weight: 500; margin: 0 0 18px; max-width: 16ch; }
+  .brand-copy h1 .hl { color: var(--green-l); }
+  .brand-copy p { color: var(--ink-2); font-size: 16px; max-width: 44ch; margin: 0; }
+
+  /* mini live panel */
+  .mini-panel { margin-top: 32px; background: var(--panel); border: 1px solid var(--line); border-radius: var(--r-lg); padding: 18px; max-width: 420px; }
+  .mp-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 14px; }
+  .mp-head .t { font-size: 13px; font-weight: 600; }
+  .mp-head .s { font-family: "Geist Mono", monospace; font-size: 10px; color: var(--ink-3); display: inline-flex; align-items: center; gap: 6px; }
+  .mp-head .s .live { width: 6px; height: 6px; border-radius: 50%; background: var(--green-l); animation: pulse 2s infinite; }
+  @keyframes pulse { 0% { box-shadow: 0 0 0 0 color-mix(in oklab, var(--green-l) 60%, transparent); } 70% { box-shadow: 0 0 0 7px transparent; } 100% { box-shadow: 0 0 0 0 transparent; } }
+  .mp-kpis { display: flex; gap: 22px; margin-bottom: 14px; }
+  .mp-kpi .v { font-size: 22px; font-weight: 500; letter-spacing: -0.02em; line-height: 1; }
+  .mp-kpi .v.green { color: var(--green-l); }
+  .mp-kpi .v .u { font-size: 11px; color: var(--ink-3); }
+  .mp-kpi .k { font-family: "Geist Mono", monospace; font-size: 9px; color: var(--ink-3); margin-top: 5px; text-transform: uppercase; letter-spacing: 0.05em; }
+  .mp-chart { height: 64px; }
+  .mp-chart svg { width: 100%; height: 100%; overflow: visible; }
+  .area-fill { fill: url(#g1); }
+  .area-line { fill: none; stroke: var(--green-l); stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; filter: drop-shadow(0 0 5px color-mix(in oklab, var(--green-l) 70%, transparent)); stroke-dasharray: 700; stroke-dashoffset: 700; animation: draw 2.6s ease forwards; }
+  @keyframes draw { to { stroke-dashoffset: 0; } }
+
+  .brand-foot { font-size: 12px; color: var(--ink-3); display: flex; gap: 18px; }
+  .brand-foot a:hover { color: var(--ink-2); }
+
+  /* RIGHT — form */
+  .form-side { display: flex; align-items: center; justify-content: center; padding: 48px; }
+  .form-card { width: 100%; max-width: 400px; }
+  .form-card .logo-sm { display: none; }
+  .form-head { margin-bottom: 30px; }
+  .form-head h2 { font-size: 30px; letter-spacing: -0.025em; font-weight: 600; margin: 0 0 8px; }
+  .form-head p { color: var(--ink-2); font-size: 15px; margin: 0; }
+  .form-head p a { color: var(--green-l); font-weight: 500; }
+  .form-head p a:hover { text-decoration: underline; }
+
+  .field { margin-bottom: 16px; }
+  .field label { display: block; font-size: 13px; font-weight: 500; color: var(--ink-2); margin-bottom: 8px; }
+  .field .input-wrap { position: relative; }
+  .field input { width: 100%; background: var(--bg-2); border: 1px solid var(--line-2); color: var(--white); border-radius: var(--r-md); padding: 13px 15px; font-size: 15px; font-family: inherit; transition: border-color 0.15s, box-shadow 0.15s, background 0.15s; }
+  .field input::placeholder { color: var(--ink-3); }
+  .field input:focus { outline: none; border-color: var(--green); background: var(--bg-3); box-shadow: 0 0 0 3px color-mix(in oklab, var(--green) 18%, transparent); }
+  .field input.has-error { border-color: var(--red); }
+  .field .toggle-pass { position: absolute; right: 8px; top: 50%; transform: translateY(-50%); background: transparent; border: none; color: var(--ink-3); cursor: pointer; padding: 6px 8px; font-size: 12px; font-family: "Geist Mono", monospace; letter-spacing: 0.04em; text-transform: uppercase; border-radius: 6px; }
+  .field .toggle-pass:hover { color: var(--ink-2); background: var(--bg-3); }
+
+  .row-between { display: flex; justify-content: space-between; align-items: center; margin: 6px 0 22px; }
+  .remember { display: inline-flex; align-items: center; gap: 9px; font-size: 13.5px; color: var(--ink-2); cursor: pointer; user-select: none; }
+  .remember input { position: absolute; opacity: 0; width: 0; height: 0; }
+  .remember .box { width: 18px; height: 18px; border-radius: 5px; border: 1px solid var(--line-2); background: var(--bg-2); display: grid; place-items: center; transition: all 0.15s; }
+  .remember input:checked + .box { background: var(--green); border-color: var(--green); }
+  .remember input:checked + .box::after { content: "✓"; font-size: 12px; color: #04130A; font-weight: 700; }
+  .remember input:focus-visible + .box { box-shadow: 0 0 0 3px color-mix(in oklab, var(--green) 22%, transparent); }
+  .forgot { font-size: 13.5px; color: var(--green-l); font-weight: 500; }
+  .forgot:hover { text-decoration: underline; }
+
+  .btn { display: inline-flex; align-items: center; justify-content: center; gap: 10px; width: 100%; padding: 14px 20px; border-radius: 999px; font-size: 15px; font-weight: 600; letter-spacing: -0.005em; border: 1px solid transparent; cursor: pointer; transition: transform 0.15s, background 0.15s, box-shadow 0.2s, opacity 0.15s; font-family: inherit; }
+  .btn-neon { background: var(--neon); color: #06080A; }
+  .btn-neon:hover { background: var(--neon-2); box-shadow: 0 12px 30px -10px color-mix(in oklab, var(--neon) 70%, transparent); }
+  .btn-neon:active { transform: translateY(1px); }
+  .btn[disabled] { opacity: 0.6; cursor: not-allowed; box-shadow: none; }
+  .spinner { width: 16px; height: 16px; border: 2px solid color-mix(in oklab, #06080A 30%, transparent); border-top-color: #06080A; border-radius: 50%; animation: spin 0.7s linear infinite; display: none; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .btn.loading .spinner { display: inline-block; }
+  .btn.loading .btn-label { opacity: 0.7; }
+
+  .alert { display: none; align-items: flex-start; gap: 11px; padding: 12px 14px; border-radius: var(--r-md); font-size: 13.5px; line-height: 1.45; margin-bottom: 20px; }
+  .alert.show { display: flex; }
+  .alert.err { background: color-mix(in oklab, var(--red) 12%, transparent); border: 1px solid color-mix(in oklab, var(--red) 38%, transparent); color: #ffd9dd; }
+  .alert.err .ai { color: var(--red); }
+  .alert.ok { background: color-mix(in oklab, var(--green) 12%, transparent); border: 1px solid color-mix(in oklab, var(--green) 38%, transparent); color: #c9f7d8; }
+  .alert.ok .ai { color: var(--green-l); }
+  .alert .ai { flex-shrink: 0; font-size: 15px; }
+
+  .divider { display: flex; align-items: center; gap: 14px; margin: 24px 0; color: var(--ink-3); font-size: 12px; font-family: "Geist Mono", monospace; letter-spacing: 0.05em; }
+  .divider::before, .divider::after { content: ""; height: 1px; flex: 1; background: var(--line); }
+
+  .help { text-align: center; margin-top: 26px; font-size: 13px; color: var(--ink-3); }
+  .help a { color: var(--ink-2); }
+  .help a:hover { color: var(--white); }
+
+  .legal { text-align: center; margin-top: 30px; font-size: 11.5px; color: var(--ink-3); line-height: 1.6; }
+  .legal a { color: var(--ink-2); text-decoration: underline; text-underline-offset: 2px; }
+
+  @media (max-width: 880px) {
+    .page { grid-template-columns: 1fr; }
+    .brand-side { display: none; }
+    .form-side { padding: 32px 24px; min-height: 100vh; }
+    .form-card .logo-sm { display: flex; align-items: center; gap: 10px; margin-bottom: 32px; font-weight: 600; letter-spacing: -0.03em; font-size: 20px; }
+    .form-card .logo-sm .mark { width: 28px; height: 28px; filter: drop-shadow(0 0 10px color-mix(in oklab, var(--neon) 40%, transparent)); }
+  }
+</style>
+</head>
+<body>
+
+<!-- ===== logo symbol (Hexágono solar) ===== -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="helion-mark" viewBox="0 0 100 100">
+      <path d="M50 7 L84.5 27 L84.5 73 L50 93 L15.5 73 L15.5 27 Z" fill="none" stroke="currentColor" stroke-width="6" stroke-linejoin="round"/>
+      <circle cx="50" cy="50" r="17.5" fill="#00C853"/>
+      <circle cx="50" cy="50" r="17.5" fill="none" stroke="#D5FF3A" stroke-width="2.4"/>
+    </symbol>
+  </defs>
+</svg>
+
+<div class="page">
+  <!-- LEFT -->
+  <aside class="brand-side">
+    <div class="grid-bg"></div>
+    <div class="aura"></div>
+
+    <a class="logo" href="#"><svg class="mark" style="color:var(--white)"><use href="#helion-mark"/></svg><span>helion</span></a>
+
+    <div class="brand-copy">
+      <h1>Sua usina <span class="hl serif-i">no bolso.</span> Sua conta de luz sob controle.</h1>
+      <p>Entre para acompanhar a geração dos seus painéis em tempo real e conferir se a sua fatura está cobrando o que deveria.</p>
+
+      <div class="mini-panel" aria-hidden="true">
+        <div class="mp-head">
+          <span class="t">Minha usina · hoje</span>
+          <span class="s"><span class="live"></span>AO VIVO</span>
+        </div>
+        <div class="mp-kpis">
+          <div class="mp-kpi"><div class="v green">4,8<span class="u"> kW</span></div><div class="k">Gerando agora</div></div>
+          <div class="mp-kpi"><div class="v">28,4<span class="u"> kWh</span></div><div class="k">Hoje</div></div>
+          <div class="mp-kpi"><div class="v">99<span class="u">%</span></div><div class="k">Saúde</div></div>
+        </div>
+        <div class="mp-chart">
+          <svg viewBox="0 0 420 64" preserveAspectRatio="none">
+            <defs><linearGradient id="g1" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#1DE074" stop-opacity="0.3"/><stop offset="100%" stop-color="#1DE074" stop-opacity="0"/></linearGradient></defs>
+            <path class="area-fill" d="M0,60 L0,52 C40,50 70,40 110,30 C150,20 180,8 230,10 C290,12 330,30 380,44 C400,50 410,54 420,56 L420,64 L0,64 Z"/>
+            <path class="area-line" d="M0,52 C40,50 70,40 110,30 C150,20 180,8 230,10 C290,12 330,30 380,44 C400,50 410,54 420,56"/>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <div class="brand-foot">
+      <span>© 2026 Helion</span>
+      <a href="#">Privacidade</a>
+      <a href="#">Termos</a>
+    </div>
+  </aside>
+
+  <!-- RIGHT -->
+  <main class="form-side">
+    <div class="form-card">
+      <div class="logo-sm"><svg class="mark" style="color:var(--white)"><use href="#helion-mark"/></svg><span>helion</span></div>
+
+      <div class="form-head">
+        <h2>Entrar na sua conta</h2>
+        <p>Novo por aqui? <a href="#" id="signupLink">Criar conta</a></p>
+      </div>
+
+      <div class="alert err" id="alertBox" role="alert">
+        <span class="ai">⚠</span>
+        <span id="alertMsg">E-mail ou senha incorretos. Tente novamente.</span>
+      </div>
+
+      <form id="loginForm" novalidate>
+        <div class="field">
+          <label for="email">E-mail</label>
+          <div class="input-wrap">
+            <input type="email" id="email" name="email" placeholder="voce@email.com" autocomplete="username" required />
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="password">Senha</label>
+          <div class="input-wrap">
+            <input type="password" id="password" name="password" placeholder="••••••••" autocomplete="current-password" required />
+            <button type="button" class="toggle-pass" id="togglePass" aria-label="Mostrar senha">ver</button>
+          </div>
+        </div>
+
+        <div class="row-between">
+          <label class="remember">
+            <input type="checkbox" id="remember" name="remember" checked />
+            <span class="box"></span>
+            <span>Manter conectado</span>
+          </label>
+          <a href="#" class="forgot" id="forgotLink">Esqueci a senha</a>
+        </div>
+
+        <button type="submit" class="btn btn-neon" id="submitBtn">
+          <span class="spinner"></span>
+          <span class="btn-label">Entrar</span>
+        </button>
+      </form>
+
+      <div class="help">
+        Problemas para acessar? <a href="https://wa.me/5581999999999" target="_blank" rel="noopener">Fale no WhatsApp</a>
+      </div>
+
+      <div class="legal">
+        Ao entrar, você concorda com os <a href="#">Termos de uso</a> e a <a href="#">Política de privacidade</a> do Helion.
+      </div>
+    </div>
+  </main>
+</div>
+
+<script>
+/* =========================================================================
+   HELION · LOGIN — CONFIGURAÇÃO
+   -------------------------------------------------------------------------
+   Ajuste os valores abaixo para apontar para a API real do Helion.
+   (Não consegui ler o código-fonte do app, então deixei os padrões mais
+   comuns — confirme com seu backend.)
+   ========================================================================= */
+const HELION_AUTH = {
+  // URL do endpoint de login (POST)
+  endpoint: "https://api.helionapp.com.br/auth/login",
+
+  // Nomes dos campos no corpo da requisição
+  fields: { email: "email", password: "password" },
+
+  // Como enviar o corpo: "json"  → application/json
+  //                      "form"  → application/x-www-form-urlencoded
+  bodyType: "json",
+
+  // Onde guardar o token retornado e como ele se chama na resposta
+  tokenKey: "token",            // ex.: resposta { token: "..." } ou { access_token: "..." }
+  storageKey: "helion_token",   // chave no localStorage/sessionStorage
+
+  // Para onde ir após login com sucesso
+  redirectTo: "/minha-usina",
+
+  // Enviar cookies de sessão? (true se o backend usa cookie httpOnly)
+  withCredentials: false,
+};
+
+/* ------------------------------------------------------------------ */
+const form = document.getElementById('loginForm');
+const emailEl = document.getElementById('email');
+const passEl = document.getElementById('password');
+const rememberEl = document.getElementById('remember');
+const submitBtn = document.getElementById('submitBtn');
+const alertBox = document.getElementById('alertBox');
+const alertMsg = document.getElementById('alertMsg');
+const togglePass = document.getElementById('togglePass');
+
+// mostrar/ocultar senha
+togglePass.addEventListener('click', () => {
+  const isPw = passEl.type === 'password';
+  passEl.type = isPw ? 'text' : 'password';
+  togglePass.textContent = isPw ? 'ocultar' : 'ver';
+  passEl.focus();
+});
+
+function showAlert(msg, type) {
+  alertMsg.textContent = msg;
+  alertBox.className = 'alert show ' + (type || 'err');
+}
+function hideAlert() { alertBox.className = 'alert'; }
+function setLoading(on) {
+  submitBtn.disabled = on;
+  submitBtn.classList.toggle('loading', on);
+  submitBtn.querySelector('.btn-label').textContent = on ? 'Entrando…' : 'Entrar';
+}
+
+form.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  hideAlert();
+  emailEl.classList.remove('has-error');
+  passEl.classList.remove('has-error');
+
+  const email = emailEl.value.trim();
+  const password = passEl.value;
+
+  // validação básica
+  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    emailEl.classList.add('has-error');
+    showAlert('Digite um e-mail válido.', 'err');
+    emailEl.focus();
+    return;
+  }
+  if (!password) {
+    passEl.classList.add('has-error');
+    showAlert('Digite sua senha.', 'err');
+    passEl.focus();
+    return;
+  }
+
+  setLoading(true);
+
+  // monta o corpo conforme a config
+  const payload = {};
+  payload[HELION_AUTH.fields.email] = email;
+  payload[HELION_AUTH.fields.password] = password;
+
+  let body, headers = {};
+  if (HELION_AUTH.bodyType === 'form') {
+    body = new URLSearchParams(payload).toString();
+    headers['Content-Type'] = 'application/x-www-form-urlencoded';
+  } else {
+    body = JSON.stringify(payload);
+    headers['Content-Type'] = 'application/json';
+    headers['Accept'] = 'application/json';
+  }
+
+  try {
+    const res = await fetch(HELION_AUTH.endpoint, {
+      method: 'POST',
+      headers,
+      body,
+      credentials: HELION_AUTH.withCredentials ? 'include' : 'same-origin',
+    });
+
+    // tenta ler JSON da resposta
+    let data = {};
+    try { data = await res.json(); } catch (_) {}
+
+    if (!res.ok) {
+      if (res.status === 401 || res.status === 403) {
+        showAlert(data.message || 'E-mail ou senha incorretos. Tente novamente.', 'err');
+        emailEl.classList.add('has-error');
+        passEl.classList.add('has-error');
+      } else if (res.status === 429) {
+        showAlert('Muitas tentativas. Aguarde um momento e tente de novo.', 'err');
+      } else {
+        showAlert(data.message || ('Erro ao entrar (código ' + res.status + ').'), 'err');
+      }
+      setLoading(false);
+      return;
+    }
+
+    // sucesso — guarda token (se houver) e redireciona
+    const token = data[HELION_AUTH.tokenKey];
+    if (token) {
+      const store = rememberEl.checked ? localStorage : sessionStorage;
+      store.setItem(HELION_AUTH.storageKey, token);
+    }
+
+    showAlert('Login realizado! Redirecionando…', 'ok');
+    setTimeout(() => { window.location.href = HELION_AUTH.redirectTo; }, 700);
+
+  } catch (err) {
+    // erro de rede / CORS / endpoint ainda não configurado
+    console.error('[Helion login]', err);
+    showAlert('Não foi possível conectar ao servidor. Verifique sua conexão ou o endpoint configurado.', 'err');
+    setLoading(false);
+  }
+});
+
+// links auxiliares (ajuste os destinos)
+document.getElementById('signupLink').addEventListener('click', (e) => { e.preventDefault(); window.location.href = '/cadastro'; });
+document.getElementById('forgotLink').addEventListener('click', (e) => { e.preventDefault(); window.location.href = '/recuperar-senha'; });
+</script>
+
+</body>
+</html>

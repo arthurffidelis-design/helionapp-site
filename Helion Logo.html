@@ -1,0 +1,431 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Helion — Identidade de Marca</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700;800&family=Geist+Mono:wght@400;500;600&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg:#06080A; --bg-1:#0B0F12; --bg-2:#11161A; --bg-3:#181F24; --panel:#0E1316;
+    --line:#1E262C; --line-2:#2A343B; --white:#F3F6F4; --ink-2:#9BA7AD; --ink-3:#66727A;
+    --green:#00C853; --green-d:#009C3B; --green-l:#1DE074; --neon:#D5FF3A; --lilac:#B49BF0;
+    --paper:#F4F2EC;
+    --max:1240px;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--white); font-family: "Geist", system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif; -webkit-font-smoothing: antialiased; line-height: 1.5; }
+  .wrap { max-width: var(--max); margin: 0 auto; padding: 0 32px; }
+  .mono { font-family: "Geist Mono", ui-monospace, Menlo, monospace; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-3); }
+  .serif-i { font-family: "Instrument Serif", serif; font-style: italic; font-weight: 400; }
+  .grid-bg { position: absolute; inset: 0; z-index: 0; pointer-events: none; background-image: linear-gradient(color-mix(in oklab, var(--line) 60%, transparent) 1px, transparent 1px), linear-gradient(90deg, color-mix(in oklab, var(--line) 60%, transparent) 1px, transparent 1px); background-size: 48px 48px; -webkit-mask-image: radial-gradient(ellipse 70% 60% at 50% 0%, #000 30%, transparent 75%); mask-image: radial-gradient(ellipse 70% 60% at 50% 0%, #000 30%, transparent 75%); }
+
+  /* HEADER */
+  header.top { position: relative; overflow: hidden; padding: 80px 0 60px; border-bottom: 1px solid var(--line); }
+  .aura { position: absolute; top: -260px; left: 50%; transform: translateX(-50%); width: 900px; height: 600px; background: radial-gradient(circle at 40% 40%, color-mix(in oklab, var(--green) 26%, transparent), transparent 55%), radial-gradient(circle at 70% 60%, color-mix(in oklab, var(--lilac) 18%, transparent), transparent 55%); filter: blur(60px); z-index: 0; }
+  header.top .wrap { position: relative; z-index: 2; }
+  .klabel { display: inline-flex; align-items: center; gap: 10px; padding: 6px 14px; border: 1px solid var(--line-2); border-radius: 999px; background: color-mix(in oklab, var(--bg-2) 70%, transparent); font-size: 12px; }
+  .klabel .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--neon); }
+  header.top h1 { font-size: clamp(40px, 5.5vw, 76px); letter-spacing: -0.04em; line-height: 0.98; font-weight: 500; margin: 22px 0 0; max-width: 18ch; }
+  header.top h1 .hl { color: var(--green-l); }
+  header.top p { color: var(--ink-2); font-size: 18px; max-width: 56ch; margin: 22px 0 0; }
+
+  /* HERO RECOMMENDED LOGO */
+  .hero-logo { display: grid; grid-template-columns: 1.1fr 1fr; gap: 0; margin-top: 56px; border: 1px solid var(--line-2); border-radius: 24px; overflow: hidden; }
+  .hero-logo .stage { background: linear-gradient(180deg, var(--bg-2), var(--bg-1)); display: grid; place-items: center; padding: 72px 40px; position: relative; }
+  .hero-logo .stage .glow { position: absolute; width: 280px; height: 280px; border-radius: 50%; background: radial-gradient(circle, color-mix(in oklab, var(--green) 28%, transparent), transparent 70%); filter: blur(44px); }
+  .hero-logo .lockup-lg { position: relative; display: inline-flex; align-items: center; gap: 18px; }
+  .hero-logo .lockup-lg svg { width: 84px; height: 84px; filter: drop-shadow(0 0 18px color-mix(in oklab, var(--neon) 35%, transparent)); }
+  .hero-logo .lockup-lg .wm { font-size: 58px; font-weight: 600; letter-spacing: -0.04em; }
+  .hero-logo .meta { padding: 44px; background: var(--panel); display: flex; flex-direction: column; justify-content: center; gap: 18px; border-left: 1px solid var(--line); }
+  .hero-logo .meta .rec { display: inline-flex; align-items: center; gap: 8px; font-family: "Geist Mono", monospace; font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--neon); }
+  .hero-logo .meta h2 { font-size: 28px; letter-spacing: -0.02em; font-weight: 600; margin: 0; }
+  .hero-logo .meta p { font-size: 14.5px; color: var(--ink-2); margin: 0; line-height: 1.6; }
+  .hero-logo .meta .concept { display: flex; gap: 22px; margin-top: 6px; }
+  .hero-logo .meta .concept .ci .n { font-size: 13px; font-weight: 600; }
+  .hero-logo .meta .concept .ci .d { font-size: 12px; color: var(--ink-3); margin-top: 2px; }
+
+  /* SECTIONS */
+  section { padding: 90px 0; border-bottom: 1px solid var(--line); position: relative; }
+  .sec-head { margin-bottom: 44px; }
+  .sec-head .mono { color: var(--neon); }
+  .sec-head h2 { font-size: clamp(30px, 3.6vw, 46px); letter-spacing: -0.03em; line-height: 1.02; font-weight: 500; margin: 12px 0 0; }
+  .sec-head h2 .serif-i { color: var(--green-l); }
+  .sec-head p { color: var(--ink-2); font-size: 16px; max-width: 60ch; margin: 14px 0 0; }
+
+  /* CONCEPT GRID */
+  .concepts { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+  .concept-card { border: 1px solid var(--line); border-radius: 18px; overflow: hidden; background: var(--bg-1); transition: border-color 0.2s, transform 0.2s; }
+  .concept-card:hover { border-color: var(--line-2); transform: translateY(-3px); }
+  .concept-card .cstage { aspect-ratio: 16/11; display: grid; place-items: center; background: radial-gradient(circle at 50% 40%, var(--bg-2), var(--bg-1)); position: relative; }
+  .concept-card .cstage svg { width: 96px; height: 96px; }
+  .concept-card.pick .cstage::after { content: "★ Recomendado"; position: absolute; top: 14px; right: 14px; font-family: "Geist Mono", monospace; font-size: 10px; letter-spacing: 0.04em; color: #06080A; background: var(--neon); padding: 4px 9px; border-radius: 999px; font-weight: 700; }
+  .concept-card .cmeta { padding: 22px 24px; border-top: 1px solid var(--line); }
+  .concept-card .cmeta .tag { font-family: "Geist Mono", monospace; font-size: 10px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-3); }
+  .concept-card .cmeta h3 { font-size: 19px; font-weight: 600; letter-spacing: -0.015em; margin: 8px 0 8px; }
+  .concept-card .cmeta p { font-size: 13px; color: var(--ink-2); line-height: 1.55; margin: 0; }
+  .concept-card .cmeta .wm-sm { margin-top: 16px; display: flex; align-items: center; gap: 9px; padding-top: 14px; border-top: 1px solid var(--line); }
+  .concept-card .cmeta .wm-sm svg { width: 22px; height: 22px; }
+  .concept-card .cmeta .wm-sm span { font-size: 17px; font-weight: 600; letter-spacing: -0.03em; }
+
+  /* LOCKUPS */
+  .lockups { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+  .lock { border: 1px solid var(--line); border-radius: 18px; padding: 48px; display: grid; place-items: center; background: var(--bg-1); min-height: 200px; }
+  .lock.horizontal .l { display: inline-flex; align-items: center; gap: 16px; }
+  .lock.horizontal svg { width: 56px; height: 56px; }
+  .lock.horizontal .wm { font-size: 40px; font-weight: 600; letter-spacing: -0.04em; }
+  .lock.stacked .l { display: flex; flex-direction: column; align-items: center; gap: 14px; }
+  .lock.stacked svg { width: 64px; height: 64px; }
+  .lock.stacked .wm { font-size: 34px; font-weight: 600; letter-spacing: -0.04em; }
+  .lock .tagline { font-family: "Geist Mono", monospace; font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--ink-3); margin-top: 6px; }
+
+  /* VARIATIONS */
+  .vary { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+  .vbox { border: 1px solid var(--line); border-radius: 16px; overflow: hidden; }
+  .vbox .vstage { aspect-ratio: 1/1; display: grid; place-items: center; }
+  .vbox .vstage svg { width: 64px; height: 64px; }
+  .vbox.on-dark .vstage { background: var(--bg-2); }
+  .vbox.on-green .vstage { background: var(--green-d); }
+  .vbox.on-light .vstage { background: var(--paper); }
+  .vbox.on-neon .vstage { background: var(--neon); }
+  .vbox .vlabel { padding: 12px 16px; border-top: 1px solid var(--line); font-family: "Geist Mono", monospace; font-size: 10px; letter-spacing: 0.05em; text-transform: uppercase; color: var(--ink-3); }
+
+  /* FAVICON / app icon */
+  .favs { display: flex; gap: 22px; align-items: flex-end; flex-wrap: wrap; }
+  .fav { display: flex; flex-direction: column; align-items: center; gap: 10px; }
+  .fav .ico { background: linear-gradient(160deg, var(--bg-2), #04130A); border: 1px solid var(--line-2); display: grid; place-items: center; box-shadow: 0 12px 30px -12px rgba(0,0,0,0.7); }
+  .fav .ico.r { border-radius: 22%; }
+  .fav .ico svg { width: 60%; height: 60%; }
+  .fav .fl { font-family: "Geist Mono", monospace; font-size: 10px; color: var(--ink-3); }
+  .fav.s64 .ico { width: 96px; height: 96px; }
+  .fav.s48 .ico { width: 64px; height: 64px; }
+  .fav.s32 .ico { width: 44px; height: 44px; }
+  .fav.s16 .ico { width: 28px; height: 28px; }
+
+  /* PALETTE */
+  .palette { display: grid; grid-template-columns: repeat(6, 1fr); gap: 14px; }
+  .sw { border: 1px solid var(--line); border-radius: 14px; overflow: hidden; }
+  .sw .chip { height: 86px; }
+  .sw .si { padding: 12px 14px; }
+  .sw .si .nm { font-size: 13px; font-weight: 600; }
+  .sw .si .hx { font-family: "Geist Mono", monospace; font-size: 11px; color: var(--ink-3); margin-top: 2px; }
+
+  /* CONSTRUCTION */
+  .constr { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: center; }
+  .constr .cv { border: 1px solid var(--line); border-radius: 18px; background: var(--bg-1); padding: 36px; display: grid; place-items: center; }
+  .constr .cv svg { width: 100%; max-width: 320px; height: auto; }
+  .constr .ct h3 { font-size: 24px; letter-spacing: -0.02em; font-weight: 600; margin: 0 0 14px; }
+  .constr .ct ul { list-style: none; padding: 0; margin: 0; }
+  .constr .ct ul li { display: flex; gap: 14px; padding: 12px 0; border-top: 1px solid var(--line); font-size: 14.5px; color: var(--ink-2); }
+  .constr .ct ul li .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--neon); margin-top: 7px; flex-shrink: 0; }
+  .constr .ct ul li b { color: var(--white); font-weight: 600; }
+
+  footer { padding: 50px 0; }
+  .foot { display: flex; justify-content: space-between; align-items: center; gap: 20px; flex-wrap: wrap; font-size: 13px; color: var(--ink-3); }
+
+  @media (max-width: 1024px) {
+    .hero-logo { grid-template-columns: 1fr; }
+    .hero-logo .meta { border-left: none; border-top: 1px solid var(--line); }
+    .concepts { grid-template-columns: 1fr 1fr; }
+    .vary { grid-template-columns: 1fr 1fr; }
+    .palette { grid-template-columns: 1fr 1fr 1fr; }
+    .constr { grid-template-columns: 1fr; }
+    .lockups { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 600px) {
+    .wrap { padding: 0 20px; }
+    .concepts { grid-template-columns: 1fr; }
+    .palette { grid-template-columns: 1fr 1fr; }
+    .hero-logo .lockup-lg .wm { font-size: 42px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ============ SVG SYMBOL LIBRARY ============ -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <!-- A · ÓRBITA (refined) -->
+    <symbol id="mk-orbita" viewBox="0 0 100 100">
+      <circle cx="50" cy="50" r="19" fill="#00C853"/>
+      <circle cx="50" cy="50" r="19" fill="none" stroke="#1DE074" stroke-width="1" opacity="0.5"/>
+      <ellipse cx="50" cy="50" rx="45" ry="15" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" transform="rotate(-26 50 50)"/>
+      <circle cx="84.5" cy="31.5" r="6.5" fill="#D5FF3A" stroke="#06080A" stroke-width="1.2"/>
+    </symbol>
+
+    <!-- B · MONOGRAMA H + SOL (recommended) -->
+    <symbol id="mk-mono" viewBox="0 0 100 100">
+      <rect x="18" y="20" width="13" height="60" rx="5" fill="currentColor"/>
+      <rect x="69" y="20" width="13" height="60" rx="5" fill="currentColor"/>
+      <circle cx="50" cy="50" r="16.5" fill="#00C853"/>
+      <circle cx="50" cy="50" r="16.5" fill="none" stroke="#D5FF3A" stroke-width="2.4"/>
+      <circle cx="50" cy="50" r="6" fill="#06080A" opacity="0.18"/>
+    </symbol>
+
+    <!-- C · SOL APERTURE -->
+    <symbol id="mk-aperture" viewBox="0 0 100 100">
+      <g fill="currentColor">
+        <g>
+          <rect x="46.5" y="6" width="7" height="17" rx="3.5"/>
+        </g>
+        <g transform="rotate(45 50 50)"><rect x="46.5" y="6" width="7" height="17" rx="3.5"/></g>
+        <g transform="rotate(90 50 50)"><rect x="46.5" y="6" width="7" height="17" rx="3.5"/></g>
+        <g transform="rotate(135 50 50)"><rect x="46.5" y="6" width="7" height="17" rx="3.5"/></g>
+        <g transform="rotate(180 50 50)"><rect x="46.5" y="6" width="7" height="17" rx="3.5"/></g>
+        <g transform="rotate(225 50 50)"><rect x="46.5" y="6" width="7" height="17" rx="3.5"/></g>
+        <g transform="rotate(270 50 50)"><rect x="46.5" y="6" width="7" height="17" rx="3.5"/></g>
+        <g transform="rotate(315 50 50)"><rect x="46.5" y="6" width="7" height="17" rx="3.5"/></g>
+      </g>
+      <circle cx="50" cy="50" r="19" fill="#00C853"/>
+      <circle cx="50" cy="50" r="8" fill="#D5FF3A"/>
+    </symbol>
+
+    <!-- D · NASCENTE (horizon + generation bars) -->
+    <symbol id="mk-nascente" viewBox="0 0 100 100">
+      <path d="M28 60 A22 22 0 0 1 72 60" fill="#00C853"/>
+      <rect x="24" y="66" width="52" height="5.5" rx="2.75" fill="currentColor"/>
+      <rect x="36" y="74" width="9" height="9" rx="2.5" fill="#1DE074"/>
+      <rect x="55" y="74" width="9" height="14" rx="2.5" fill="#D5FF3A"/>
+    </symbol>
+
+    <!-- E · CÉLULA HEXAGONAL -->
+    <symbol id="mk-hex" viewBox="0 0 100 100">
+      <path d="M50 8 L85 28 L85 72 L50 92 L15 72 L15 28 Z" fill="none" stroke="currentColor" stroke-width="6" stroke-linejoin="round"/>
+      <circle cx="50" cy="50" r="17" fill="#00C853"/>
+      <circle cx="50" cy="50" r="17" fill="none" stroke="#D5FF3A" stroke-width="2.2"/>
+    </symbol>
+
+    <!-- mono (white) version of recommended for variations -->
+    <symbol id="mk-mono-white" viewBox="0 0 100 100">
+      <rect x="18" y="20" width="13" height="60" rx="5" fill="currentColor"/>
+      <rect x="69" y="20" width="13" height="60" rx="5" fill="currentColor"/>
+      <circle cx="50" cy="50" r="16.5" fill="none" stroke="currentColor" stroke-width="6"/>
+    </symbol>
+  </defs>
+</svg>
+
+<!-- ============ HEADER ============ -->
+<header class="top">
+  <div class="grid-bg"></div>
+  <div class="aura"></div>
+  <div class="wrap">
+    <span class="klabel mono"><span class="dot"></span>Helion · Identidade de marca</span>
+    <h1>Uma marca <span class="hl">sólida</span> para a energia do futuro.</h1>
+    <p>O nome nasce de <strong>Helios</strong> (o sol) + <strong>íon</strong> (a partícula de energia). A marca traduz isso em um símbolo geométrico, moderno e tecnológico — que funciona do favicon de 16px ao letreiro de fachada.</p>
+
+    <!-- RECOMMENDED -->
+    <div class="hero-logo">
+      <div class="stage">
+        <div class="glow"></div>
+        <div class="lockup-lg">
+          <svg style="color:var(--white)"><use href="#mk-mono"/></svg>
+          <span class="wm">helion</span>
+        </div>
+      </div>
+      <div class="meta">
+        <span class="rec">★ Direção recomendada</span>
+        <h2>Monograma “H” solar</h2>
+        <p>As duas hastes do <strong>H</strong> sustentam um sol no centro — a energia que conecta e dá força à estrutura. Sólido como uma engenharia, moderno no traço, com o anel neon que assina a tecnologia.</p>
+        <div class="concept">
+          <div class="ci"><div class="n" style="color:var(--green-l)">Helios</div><div class="d">o disco solar central</div></div>
+          <div class="ci"><div class="n" style="color:var(--neon)">Íon</div><div class="d">o anel de carga elétrica</div></div>
+          <div class="ci"><div class="n">H</div><div class="d">a marca, estável e firme</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- ============ CONCEPTS ============ -->
+<section>
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="mono">01 — Direções</span>
+      <h2>Cinco caminhos para <span class="serif-i">o símbolo.</span></h2>
+      <p>Cada um carrega o mesmo significado — sol + energia — por uma rota visual diferente. Todos desenhados na mesma grade para conviverem no sistema.</p>
+    </div>
+    <div class="concepts">
+      <div class="concept-card pick">
+        <div class="cstage"><svg style="color:var(--white)"><use href="#mk-mono"/></svg></div>
+        <div class="cmeta">
+          <span class="tag">B · Monograma</span>
+          <h3>“H” solar</h3>
+          <p>Letra H firme com o sol no centro e anel neon. Ownável, corporativo e tecnológico.</p>
+          <div class="wm-sm"><svg style="color:var(--white)"><use href="#mk-mono"/></svg><span>helion</span></div>
+        </div>
+      </div>
+      <div class="concept-card">
+        <div class="cstage"><svg style="color:var(--white)"><use href="#mk-orbita"/></svg></div>
+        <div class="cmeta">
+          <span class="tag">A · Órbita</span>
+          <h3>Sol + íon em órbita</h3>
+          <p>Disco solar com a órbita de um íon. Dinâmico, remete a movimento e energia viva.</p>
+          <div class="wm-sm"><svg style="color:var(--white)"><use href="#mk-orbita"/></svg><span>helion</span></div>
+        </div>
+      </div>
+      <div class="concept-card">
+        <div class="cstage"><svg style="color:var(--white)"><use href="#mk-aperture"/></svg></div>
+        <div class="cmeta">
+          <span class="tag">C · Aperture</span>
+          <h3>Sol geométrico</h3>
+          <p>Raios radiais como uma abertura de câmera. Preciso, técnico e luminoso.</p>
+          <div class="wm-sm"><svg style="color:var(--white)"><use href="#mk-aperture"/></svg><span>helion</span></div>
+        </div>
+      </div>
+      <div class="concept-card">
+        <div class="cstage"><svg style="color:var(--white)"><use href="#mk-nascente"/></svg></div>
+        <div class="cmeta">
+          <span class="tag">D · Nascente</span>
+          <h3>Sol &amp; geração</h3>
+          <p>Sol nascendo sobre o horizonte com barras de geração que crescem. Otimista.</p>
+          <div class="wm-sm"><svg style="color:var(--white)"><use href="#mk-nascente"/></svg><span>helion</span></div>
+        </div>
+      </div>
+      <div class="concept-card">
+        <div class="cstage"><svg style="color:var(--white)"><use href="#mk-hex"/></svg></div>
+        <div class="cmeta">
+          <span class="tag">E · Célula</span>
+          <h3>Hexágono solar</h3>
+          <p>A célula fotovoltaica como engenharia. Sólido, industrial, confiável.</p>
+          <div class="wm-sm"><svg style="color:var(--white)"><use href="#mk-hex"/></svg><span>helion</span></div>
+        </div>
+      </div>
+      <div class="concept-card" style="display:grid;place-items:center;background:linear-gradient(180deg,var(--bg-2),var(--bg-1));">
+        <div style="text-align:center;padding:30px;">
+          <div class="mono" style="color:var(--neon)">Sua escolha</div>
+          <p style="font-size:14px;color:var(--ink-2);margin:12px 0 0;max-width:24ch;">Me diga qual direção prefere e eu refino o lockup, gero os arquivos e aplico no site.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ LOCKUPS ============ -->
+<section>
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="mono">02 — Lockups</span>
+      <h2>Assinatura <span class="serif-i">horizontal e empilhada.</span></h2>
+      <p>A versão recomendada em suas duas construções principais, com espaço de respiro e proporção definidos.</p>
+    </div>
+    <div class="lockups">
+      <div class="lock horizontal">
+        <div class="l">
+          <svg style="color:var(--white)"><use href="#mk-mono"/></svg>
+          <span class="wm">helion</span>
+        </div>
+      </div>
+      <div class="lock stacked">
+        <div class="l">
+          <svg style="color:var(--white)"><use href="#mk-mono"/></svg>
+          <span class="wm">helion</span>
+          <span class="tagline">energia · sob controle</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ VARIATIONS ============ -->
+<section>
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="mono">03 — Variações</span>
+      <h2>Funciona em <span class="serif-i">qualquer fundo.</span></h2>
+      <p>Cor sobre escuro, negativo sobre a cor da marca, monocromático sobre claro e sobre neon. O símbolo mantém legibilidade e força em todos.</p>
+    </div>
+    <div class="vary">
+      <div class="vbox on-dark"><div class="vstage"><svg style="color:var(--white)"><use href="#mk-mono"/></svg></div><div class="vlabel">Cor · fundo escuro</div></div>
+      <div class="vbox on-green"><div class="vstage"><svg style="color:var(--white)"><use href="#mk-mono-white"/></svg></div><div class="vlabel">Negativo · verde</div></div>
+      <div class="vbox on-light"><div class="vstage"><svg style="color:#06080A"><use href="#mk-mono-white"/></svg></div><div class="vlabel">Mono · fundo claro</div></div>
+      <div class="vbox on-neon"><div class="vstage"><svg style="color:#06080A"><use href="#mk-mono-white"/></svg></div><div class="vlabel">Mono · neon</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FAVICON ============ -->
+<section>
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="mono">04 — Aplicação digital</span>
+      <h2>Do app icon ao <span class="serif-i">favicon de 16px.</span></h2>
+      <p>O símbolo foi desenhado para reduzir sem perder identidade — o que importa em ícones de app, abas de navegador e avatares.</p>
+    </div>
+    <div class="favs">
+      <div class="fav s64"><div class="ico r"><svg style="color:var(--white)"><use href="#mk-mono"/></svg></div><span class="fl">96 px</span></div>
+      <div class="fav s48"><div class="ico r"><svg style="color:var(--white)"><use href="#mk-mono"/></svg></div><span class="fl">64 px</span></div>
+      <div class="fav s32"><div class="ico r"><svg style="color:var(--white)"><use href="#mk-mono"/></svg></div><span class="fl">32 px</span></div>
+      <div class="fav s16"><div class="ico r"><svg style="color:var(--white)"><use href="#mk-mono"/></svg></div><span class="fl">16 px</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CONSTRUCTION ============ -->
+<section>
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="mono">05 — Construção</span>
+      <h2>Geometria <span class="serif-i">com intenção.</span></h2>
+    </div>
+    <div class="constr">
+      <div class="cv">
+        <svg viewBox="0 0 100 100" style="color:var(--white)">
+          <!-- guides -->
+          <g stroke="#2A343B" stroke-width="0.5" stroke-dasharray="2 2" fill="none">
+            <circle cx="50" cy="50" r="16.5"/>
+            <circle cx="50" cy="50" r="24"/>
+            <line x1="50" y1="6" x2="50" y2="94"/>
+            <line x1="6" y1="50" x2="94" y2="50"/>
+            <rect x="18" y="20" width="13" height="60"/>
+            <rect x="69" y="20" width="13" height="60"/>
+          </g>
+          <use href="#mk-mono"/>
+        </svg>
+      </div>
+      <div class="ct">
+        <h3>Regras do símbolo</h3>
+        <ul>
+          <li><span class="dot"></span><div><b>Grade de 100.</b> Tudo se constrói numa malha quadrada; o sol fica no centro óptico exato.</div></li>
+          <li><span class="dot"></span><div><b>Hastes 13 / altura 60.</b> Proporção fixa do H — robustez sem peso excessivo.</div></li>
+          <li><span class="dot"></span><div><b>Sol = 33% da altura.</b> Disco verde com anel neon de 2,4 de espessura.</div></li>
+          <li><span class="dot"></span><div><b>Área de proteção.</b> Margem mínima = raio do sol em todos os lados.</div></li>
+          <li><span class="dot"></span><div><b>Tamanho mínimo.</b> 16 px no digital; 8 mm no impresso.</div></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PALETTE ============ -->
+<section style="border-bottom:none;">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="mono">06 — Cores da marca</span>
+      <h2>Verde sólido, <span class="serif-i">neon tecnológico.</span></h2>
+    </div>
+    <div class="palette">
+      <div class="sw"><div class="chip" style="background:#00C853"></div><div class="si"><div class="nm">Verde Helion</div><div class="hx">#00C853</div></div></div>
+      <div class="sw"><div class="chip" style="background:#1DE074"></div><div class="si"><div class="nm">Verde vivo</div><div class="hx">#1DE074</div></div></div>
+      <div class="sw"><div class="chip" style="background:#D5FF3A"></div><div class="si"><div class="nm">Neon lime</div><div class="hx">#D5FF3A</div></div></div>
+      <div class="sw"><div class="chip" style="background:#B49BF0"></div><div class="si"><div class="nm">Lilás</div><div class="hx">#B49BF0</div></div></div>
+      <div class="sw"><div class="chip" style="background:#06080A"></div><div class="si"><div class="nm">Preto Helion</div><div class="hx">#06080A</div></div></div>
+      <div class="sw"><div class="chip" style="background:#F3F6F4;border-bottom:1px solid var(--line);"></div><div class="si"><div class="nm">Branco</div><div class="hx">#F3F6F4</div></div></div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap foot">
+    <div style="display:inline-flex;align-items:center;gap:10px;">
+      <svg style="width:26px;height:26px;color:var(--white)"><use href="#mk-mono"/></svg>
+      <span style="font-weight:600;letter-spacing:-0.03em;font-size:18px;">helion</span>
+    </div>
+    <span class="mono">Identidade de marca · 2026</span>
+  </div>
+</footer>
+
+</body>
+</html>

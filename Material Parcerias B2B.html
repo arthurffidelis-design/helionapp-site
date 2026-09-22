@@ -1,0 +1,267 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Helion — Programa de Parcerias B2B</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700;800&family=Geist+Mono:wght@400;500;600&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet" />
+<style>doc-page:not(:defined){visibility:hidden}</style>
+<style>
+  :root {
+    --ink:#0B0F12; --ink-2:#4A555C; --ink-3:#7A868D; --line:#DCE2E4; --line-2:#EEF1F2;
+    --paper:#FCFCFB; --panel:#F4F6F5;
+    --green:#009C3B; --green-d:#00742C; --green-l:#00B84A; --neon:#8FBF00; --lilac:#7A5FC7;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: #E9ECEC; }
+  body { font-family: "Geist", system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif; color: var(--ink); font-size: 15px; line-height: 1.5; }
+  h1, h2, h3, h4 { margin: 0; letter-spacing: -0.02em; }
+  p { margin: 0; }
+  .mono { font-family: "Geist Mono", ui-monospace, Menlo, monospace; font-size: 11px; letter-spacing: 0.07em; text-transform: uppercase; color: var(--ink-3); }
+  .serif-i { font-family: "Instrument Serif", serif; font-style: italic; font-weight: 400; }
+  .logo { display: inline-flex; align-items: center; gap: 10px; font-weight: 600; letter-spacing: -0.03em; font-size: 19px; color: var(--ink); }
+  .logo .mark { width: 26px; height: 26px; }
+
+  .pg-header { display: flex; justify-content: space-between; align-items: center; padding-bottom: 18px; margin-bottom: 30px; border-bottom: 1px solid var(--line); }
+  .pg-header .tag { font-family: "Geist Mono", monospace; font-size: 10.5px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-3); }
+  .pg-footer { display: flex; justify-content: space-between; padding-top: 14px; margin-top: 24px; border-top: 1px solid var(--line); font-size: 10.5px; color: var(--ink-3); font-family: "Geist Mono", monospace; }
+
+  /* COVER */
+  .cover { display: flex; flex-direction: column; justify-content: space-between; height: 100%; min-height: 640px; }
+  .cover-top { display: flex; justify-content: space-between; align-items: center; }
+  .cover-mid { flex: 1; display: flex; flex-direction: column; justify-content: center; gap: 22px; max-width: 30ch; }
+  .cover-mid .eyebrow { display: inline-flex; align-items: center; gap: 10px; font-family: "Geist Mono", monospace; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--lilac); }
+  .cover-mid .eyebrow::before { content:""; width: 22px; height: 1px; background: var(--lilac); }
+  .cover-mid h1 { font-size: 44px; line-height: 1.06; font-weight: 500; }
+  .cover-mid h1 .hl { color: var(--lilac); font-family: "Instrument Serif", serif; font-style: italic; }
+  .cover-mid p { font-size: 16px; color: var(--ink-2); line-height: 1.5; }
+  .cover-bottom { display: flex; justify-content: space-between; align-items: flex-end; font-size: 12px; color: var(--ink-3); }
+  .cover-bottom .rec { display: flex; align-items: center; gap: 8px; }
+  .cover-bottom .rec .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--lilac); }
+
+  .sec-tag { display: inline-flex; align-items: center; gap: 10px; font-family: "Geist Mono", monospace; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--lilac); margin-bottom: 8px; }
+  .sec-tag::before { content: ""; width: 22px; height: 1px; background: var(--lilac); }
+  h2.page-title { font-size: 30px; font-weight: 500; line-height: 1.1; margin-bottom: 26px; max-width: 26ch; }
+  h2.page-title .serif-i { color: var(--lilac); }
+
+  .dor-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 30px; }
+  .dor-card { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 22px; break-inside: avoid; }
+  .dor-card .k { font-family: "Geist Mono", monospace; font-size: 10.5px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--lilac); margin-bottom: 10px; display: block; }
+  .dor-card h3 { font-size: 18px; font-weight: 600; margin-bottom: 8px; }
+  .dor-card p { font-size: 13.5px; color: var(--ink-2); line-height: 1.55; }
+
+  .tier-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; margin-bottom: 26px; }
+  .tier { border: 1px solid var(--line); border-radius: 12px; padding: 20px; background: var(--paper); break-inside: avoid; }
+  .tier.hi { border-color: var(--lilac); background: var(--panel); }
+  .tier .tname { font-family: "Geist Mono", monospace; font-size: 10.5px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-3); margin-bottom: 10px; }
+  .tier.hi .tname { color: var(--lilac); }
+  .tier h4 { font-size: 17px; font-weight: 600; margin-bottom: 10px; }
+  .tier ul { list-style: none; padding: 0; margin: 0; }
+  .tier li { font-size: 12.5px; color: var(--ink-2); padding: 5px 0; border-top: 1px solid var(--line-2); }
+  .tier li:first-child { border-top: none; }
+  .tier li b { color: var(--ink); }
+
+  .quote-block { background: var(--panel); border-left: 3px solid var(--lilac); border-radius: 0 10px 10px 0; padding: 18px 22px; margin: 24px 0; font-size: 14px; color: var(--ink-2); line-height: 1.6; break-inside: avoid; }
+  .quote-block b { color: var(--ink); }
+
+  .roi-strip { display: flex; gap: 14px; margin-bottom: 30px; }
+  .roi-box { flex: 1; background: var(--ink); color: #fff; border-radius: 12px; padding: 20px 22px; break-inside: avoid; }
+  .roi-box .v { font-size: 26px; font-weight: 500; letter-spacing: -0.02em; color: var(--lilac); }
+  .roi-box .l { font-size: 12px; color: #C6CDCE; margin-top: 6px; line-height: 1.4; }
+
+  .steps { display: flex; flex-direction: column; gap: 0; margin-top: 8px; }
+  .step-row { display: grid; grid-template-columns: 34px 1fr; gap: 16px; padding: 14px 0; border-top: 1px solid var(--line); break-inside: avoid; }
+  .step-row:first-child { border-top: none; }
+  .step-row .n { width: 30px; height: 30px; border-radius: 50%; background: var(--ink); color: var(--lilac); font-family: "Geist Mono", monospace; font-size: 13px; font-weight: 600; display: grid; place-items: center; }
+  .step-row h4 { font-size: 14.5px; font-weight: 600; margin-bottom: 3px; }
+  .step-row p { font-size: 12.5px; color: var(--ink-2); }
+
+  .req-list { list-style: none; padding: 0; margin: 0 0 26px; }
+  .req-list li { display: flex; gap: 12px; align-items: flex-start; padding: 10px 0; border-top: 1px solid var(--line); font-size: 13.5px; color: var(--ink-2); break-inside: avoid; }
+  .req-list li:first-child { border-top: none; }
+  .req-list li::before { content: "✓"; color: var(--lilac); font-weight: 700; flex-shrink: 0; font-family: "Geist Mono", monospace; }
+  .req-list li b { color: var(--ink); }
+
+  .cta-band { background: var(--ink); color: #fff; border-radius: 14px; padding: 30px 32px; margin-top: 26px; text-align: center; break-inside: avoid; }
+  .cta-band h3 { font-size: 22px; font-weight: 500; margin-bottom: 8px; }
+  .cta-band h3 .serif-i { color: var(--lilac); }
+  .cta-band p { font-size: 13.5px; color: #C6CDCE; margin-bottom: 18px; }
+  .cta-band .contacts { display: flex; justify-content: center; gap: 26px; font-family: "Geist Mono", monospace; font-size: 12px; color: var(--lilac); }
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="helion-mark" viewBox="0 0 100 100">
+      <path d="M50 7 L84.5 27 L84.5 73 L50 93 L15.5 73 L15.5 27 Z" fill="none" stroke="currentColor" stroke-width="6" stroke-linejoin="round"/>
+      <circle cx="50" cy="50" r="17.5" fill="#009C3B"/>
+      <circle cx="50" cy="50" r="17.5" fill="none" stroke="#8FBF00" stroke-width="2.4"/>
+    </symbol>
+  </defs>
+</svg>
+
+<!-- PAGE 1 — COVER -->
+<doc-page size="letter" margin="0.85in">
+  <div class="cover">
+    <div class="cover-top">
+      <a class="logo"><svg class="mark"><use href="#helion-mark"/></svg><span>helion</span></a>
+      <span class="mono">Programa de parcerias · confidencial</span>
+    </div>
+    <div class="cover-mid">
+      <span class="eyebrow">Parcerias B2B</span>
+      <h1>Cresça com o Helion. <span class="hl">Ganhe em cada usina.</span></h1>
+      <p>Um programa para integradores, consultorias e distribuidoras que querem oferecer monitoramento e gestão de créditos sem construir a tecnologia do zero.</p>
+    </div>
+    <div class="cover-bottom">
+      <div class="rec"><span class="dot"></span>helionapp.com.br</div>
+      <span>Environ Energia e Tecnologia · Recife/PE</span>
+    </div>
+  </div>
+</doc-page>
+
+<!-- PAGE 2 — POR QUE SER PARCEIRO -->
+<doc-page size="letter" margin="0.85in">
+  <div class="pg-header">
+    <a class="logo"><svg class="mark"><use href="#helion-mark"/></svg><span>helion</span></a>
+    <span class="tag">01 · Por que ser parceiro Helion</span>
+  </div>
+
+  <span class="sec-tag">A oportunidade</span>
+  <h2 class="page-title">Seu pós-venda vira <span class="serif-i">canal de receita</span> — sem construir nada.</h2>
+
+  <div class="dor-grid">
+    <div class="dor-card">
+      <span class="k">O que você já tem</span>
+      <h3>Uma carteira de clientes</h3>
+      <p>Clientes que confiam em você para a instalação, mas que hoje não recebem nenhum acompanhamento depois que a usina liga.</p>
+    </div>
+    <div class="dor-card">
+      <span class="k">O que falta</span>
+      <h3>Tecnologia própria de monitoramento</h3>
+      <p>Construir e manter integrações com portais de inversor e concessionárias custa tempo e engenharia que a maioria não tem.</p>
+    </div>
+  </div>
+
+  <div class="roi-strip">
+    <div class="roi-box"><div class="v">100 usinas</div><div class="l">a R$ 3,50/usina no atacado e R$ 19,90 na revenda = ~R$ 1.640/mês de recorrência nova.</div></div>
+    <div class="roi-box"><div class="v">0 dev</div><div class="l">de engenharia própria — o Helion já integra os principais inversores e concessionárias do país.</div></div>
+    <div class="roi-box"><div class="v">+30%</div><div class="l">dos integradores parceiros contratam o app com a própria marca (white label).</div></div>
+  </div>
+
+  <div class="quote-block">
+    <b>Como funciona a margem:</b> você compra a monitoria no atacado (faixa de entrada a partir de R$ 3,50/usina) e revende ao seu cliente final pelo preço de mercado do Helion Monitor (R$ 19,90). A diferença é sua margem recorrente, mês após mês, sem custo de suporte técnico — isso é com a gente.
+  </div>
+
+  <div class="pg-footer">
+    <span>Helion · Programa de Parcerias B2B</span>
+    <span>pág. 2 / 4</span>
+  </div>
+</doc-page>
+
+<!-- PAGE 3 — NÍVEIS DE PARCERIA -->
+<doc-page size="letter" margin="0.85in">
+  <div class="pg-header">
+    <a class="logo"><svg class="mark"><use href="#helion-mark"/></svg><span>helion</span></a>
+    <span class="tag">02 · Níveis de parceria</span>
+  </div>
+
+  <span class="sec-tag">Estrutura do programa</span>
+  <h2 class="page-title">Três níveis, <span class="serif-i">um só</span> caminho de crescimento.</h2>
+
+  <div class="tier-grid">
+    <div class="tier">
+      <div class="tname">Nível 1</div>
+      <h4>Indicador</h4>
+      <ul>
+        <li>Indica clientes ao Helion</li>
+        <li>Comissão por assinatura ativa</li>
+        <li>Sem gestão de carteira própria</li>
+        <li>Ideal para começar sem compromisso</li>
+      </ul>
+    </div>
+    <div class="tier hi">
+      <div class="tname">Nível 2 · recomendado</div>
+      <h4>Integrador Parceiro</h4>
+      <ul>
+        <li>Painel próprio · Helion Integrador</li>
+        <li>Compra no atacado, revende com margem</li>
+        <li>Degressividade por volume de usinas</li>
+        <li>Suporte prioritário à implantação</li>
+      </ul>
+    </div>
+    <div class="tier">
+      <div class="tname">Nível 3</div>
+      <h4>White Label</h4>
+      <ul>
+        <li>Tudo do Integrador Parceiro</li>
+        <li>App com a marca do seu negócio</li>
+        <li>Domínio e comunicação próprios</li>
+        <li>Co-marketing com o Helion</li>
+      </ul>
+    </div>
+  </div>
+
+  <span class="sec-tag">O que esperamos de um parceiro</span>
+  <ul class="req-list">
+    <li><b>Carteira ativa</b> — clientes reais com usina instalada, mesmo que pequena.</li>
+    <li><b>Relacionamento direto</b> — você é o ponto de contato comercial do seu cliente; o Helion cuida da tecnologia.</li>
+    <li><b>Volume crescente</b> — o programa foi desenhado para recompensar quem escala a carteira ao longo do tempo.</li>
+  </ul>
+
+  <div class="pg-footer">
+    <span>Helion · Programa de Parcerias B2B</span>
+    <span>pág. 3 / 4</span>
+  </div>
+</doc-page>
+
+<!-- PAGE 4 — COMO COMEÇAR -->
+<doc-page size="letter" margin="0.85in">
+  <div class="pg-header">
+    <a class="logo"><svg class="mark"><use href="#helion-mark"/></svg><span>helion</span></a>
+    <span class="tag">03 · Como começar</span>
+  </div>
+
+  <span class="sec-tag">Próximos passos</span>
+  <h2 class="page-title">Da conversa ao <span class="serif-i">primeiro cliente</span> revendido.</h2>
+
+  <div class="steps">
+    <div class="step-row">
+      <div class="n">1</div>
+      <div><h4>Conversa de encaixe</h4><p>Entendemos o tamanho da sua carteira e o nível de parceria que faz sentido hoje.</p></div>
+    </div>
+    <div class="step-row">
+      <div class="n">2</div>
+      <div><h4>Configuração da conta parceira</h4><p>Criamos seu painel com as condições de atacado e, se for o caso, a marca própria.</p></div>
+    </div>
+    <div class="step-row">
+      <div class="n">3</div>
+      <div><h4>Primeiros clientes migrados</h4><p>Importamos sua carteira atual e ativamos o monitoramento para os primeiros clientes.</p></div>
+    </div>
+    <div class="step-row">
+      <div class="n">4</div>
+      <div><h4>Escala com degressividade</h4><p>Conforme sua carteira cresce, o preço por usina cai automaticamente — sua margem aumenta.</p></div>
+    </div>
+  </div>
+
+  <div class="cta-band">
+    <h3>Vamos estruturar sua <span class="serif-i">parceria?</span></h3>
+    <p>Fale com o time e receba uma simulação de margem com o tamanho real da sua carteira.</p>
+    <div class="contacts">
+      <span>parcerias@helionapp.com.br</span>
+      <span>wa.me/5581999999999</span>
+      <span>helionapp.com.br</span>
+    </div>
+  </div>
+
+  <div class="pg-footer">
+    <span>Helion · Environ Energia e Tecnologia · Recife/PE</span>
+    <span>pág. 4 / 4</span>
+  </div>
+</doc-page>
+
+<script src="doc-page.js"></script>
+</body>
+</html>

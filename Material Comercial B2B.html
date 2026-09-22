@@ -1,0 +1,275 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Helion — Proposta comercial B2B</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700;800&family=Geist+Mono:wght@400;500;600&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet" />
+<style>doc-page:not(:defined){visibility:hidden}</style>
+<style>
+  :root {
+    --ink:#0B0F12; --ink-2:#4A555C; --ink-3:#7A868D; --line:#DCE2E4; --line-2:#EEF1F2;
+    --paper:#FCFCFB; --panel:#F4F6F5;
+    --green:#009C3B; --green-d:#00742C; --green-l:#00B84A; --neon:#8FBF00; --lilac:#7A5FC7;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: #E9ECEC; }
+  body { font-family: "Geist", system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif; color: var(--ink); font-size: 15px; line-height: 1.5; }
+  h1, h2, h3, h4 { margin: 0; letter-spacing: -0.02em; }
+  p { margin: 0; }
+  .mono { font-family: "Geist Mono", ui-monospace, Menlo, monospace; font-size: 11px; letter-spacing: 0.07em; text-transform: uppercase; color: var(--ink-3); }
+  .serif-i { font-family: "Instrument Serif", serif; font-style: italic; font-weight: 400; }
+  .logo { display: inline-flex; align-items: center; gap: 10px; font-weight: 600; letter-spacing: -0.03em; font-size: 19px; color: var(--ink); }
+  .logo .mark { width: 26px; height: 26px; }
+
+  .pg-header { display: flex; justify-content: space-between; align-items: center; padding-bottom: 18px; margin-bottom: 30px; border-bottom: 1px solid var(--line); }
+  .pg-header .tag { font-family: "Geist Mono", monospace; font-size: 10.5px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-3); }
+  .pg-footer { display: flex; justify-content: space-between; padding-top: 14px; margin-top: 24px; border-top: 1px solid var(--line); font-size: 10.5px; color: var(--ink-3); font-family: "Geist Mono", monospace; }
+
+  /* COVER */
+  .cover { display: flex; flex-direction: column; justify-content: space-between; height: 100%; min-height: 640px; }
+  .cover-top { display: flex; justify-content: space-between; align-items: center; }
+  .cover-mid { flex: 1; display: flex; flex-direction: column; justify-content: center; gap: 22px; max-width: 30ch; }
+  .cover-mid .eyebrow { display: inline-flex; align-items: center; gap: 10px; font-family: "Geist Mono", monospace; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--green-d); }
+  .cover-mid .eyebrow::before { content:""; width: 22px; height: 1px; background: var(--green-d); }
+  .cover-mid h1 { font-size: 46px; line-height: 1.05; font-weight: 500; }
+  .cover-mid h1 .hl { color: var(--green-d); font-family: "Instrument Serif", serif; font-style: italic; }
+  .cover-mid p { font-size: 16px; color: var(--ink-2); line-height: 1.5; }
+  .cover-bottom { display: flex; justify-content: space-between; align-items: flex-end; font-size: 12px; color: var(--ink-3); }
+  .cover-bottom .rec { display: flex; align-items: center; gap: 8px; }
+  .cover-bottom .rec .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--green); }
+
+  /* SECTION HEAD */
+  .sec-tag { display: inline-flex; align-items: center; gap: 10px; font-family: "Geist Mono", monospace; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--green-d); margin-bottom: 8px; }
+  .sec-tag::before { content: ""; width: 22px; height: 1px; background: var(--green-d); }
+  h2.page-title { font-size: 30px; font-weight: 500; line-height: 1.1; margin-bottom: 26px; max-width: 24ch; }
+  h2.page-title .serif-i { color: var(--green-d); }
+
+  /* DOR CARDS */
+  .dor-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 30px; }
+  .dor-card { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 22px; break-inside: avoid; }
+  .dor-card .k { font-family: "Geist Mono", monospace; font-size: 10.5px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--green-d); margin-bottom: 10px; display: block; }
+  .dor-card h3 { font-size: 18px; font-weight: 600; margin-bottom: 8px; }
+  .dor-card p { font-size: 13.5px; color: var(--ink-2); line-height: 1.55; }
+
+  .roi-strip { display: flex; gap: 14px; margin-bottom: 30px; }
+  .roi-box { flex: 1; background: var(--ink); color: #fff; border-radius: 12px; padding: 20px 22px; break-inside: avoid; }
+  .roi-box .v { font-size: 26px; font-weight: 500; letter-spacing: -0.02em; color: var(--neon); }
+  .roi-box .l { font-size: 12px; color: #C6CDCE; margin-top: 6px; line-height: 1.4; }
+
+  .quote-block { background: var(--panel); border-left: 3px solid var(--green); border-radius: 0 10px 10px 0; padding: 18px 22px; margin: 24px 0; font-size: 14px; color: var(--ink-2); line-height: 1.6; break-inside: avoid; }
+  .quote-block b { color: var(--ink); }
+
+  /* PLAN TABLE */
+  .plan-table { border: 1px solid var(--line); border-radius: 12px; overflow: hidden; margin-bottom: 22px; break-inside: avoid; }
+  .plan-table .ph { background: var(--ink); color: #fff; padding: 16px 22px; display: flex; justify-content: space-between; align-items: baseline; }
+  .plan-table .ph h3 { font-size: 19px; font-weight: 600; }
+  .plan-table .ph span { font-family: "Geist Mono", monospace; font-size: 12px; color: var(--neon); }
+  .plan-table .pb { padding: 18px 22px; background: var(--paper); }
+  .plan-table .dor-line { font-size: 13px; color: var(--ink-2); line-height: 1.55; margin-bottom: 14px; padding-bottom: 14px; border-bottom: 1px solid var(--line); }
+  .plan-table .dor-line b { color: var(--ink); }
+  .price-tiers { width: 100%; border-collapse: collapse; margin-bottom: 12px; }
+  .price-tiers td { padding: 8px 0; font-size: 13px; border-top: 1px solid var(--line-2); }
+  .price-tiers tr:first-child td { border-top: none; }
+  .price-tiers td:first-child { color: var(--ink-2); }
+  .price-tiers td:last-child { text-align: right; font-family: "Geist Mono", monospace; color: var(--green-d); font-weight: 600; }
+  .addon-line { font-size: 12px; color: var(--ink-3); }
+
+  .feat-list { list-style: none; padding: 0; margin: 12px 0 0; columns: 2; column-gap: 20px; }
+  .feat-list li { font-size: 12.5px; color: var(--ink-2); padding: 4px 0; break-inside: avoid; display: flex; gap: 8px; }
+  .feat-list li::before { content: "✓"; color: var(--green-d); font-weight: 700; flex-shrink: 0; }
+
+  .steps { display: flex; flex-direction: column; gap: 0; margin-top: 8px; }
+  .step-row { display: grid; grid-template-columns: 34px 1fr; gap: 16px; padding: 14px 0; border-top: 1px solid var(--line); break-inside: avoid; }
+  .step-row:first-child { border-top: none; }
+  .step-row .n { width: 30px; height: 30px; border-radius: 50%; background: var(--ink); color: var(--neon); font-family: "Geist Mono", monospace; font-size: 13px; font-weight: 600; display: grid; place-items: center; }
+  .step-row h4 { font-size: 14.5px; font-weight: 600; margin-bottom: 3px; }
+  .step-row p { font-size: 12.5px; color: var(--ink-2); }
+
+  .cta-band { background: var(--ink); color: #fff; border-radius: 14px; padding: 30px 32px; margin-top: 26px; text-align: center; break-inside: avoid; }
+  .cta-band h3 { font-size: 22px; font-weight: 500; margin-bottom: 8px; }
+  .cta-band h3 .serif-i { color: var(--neon); }
+  .cta-band p { font-size: 13.5px; color: #C6CDCE; margin-bottom: 18px; }
+  .cta-band .contacts { display: flex; justify-content: center; gap: 26px; font-family: "Geist Mono", monospace; font-size: 12px; color: var(--neon); }
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="helion-mark" viewBox="0 0 100 100">
+      <path d="M50 7 L84.5 27 L84.5 73 L50 93 L15.5 73 L15.5 27 Z" fill="none" stroke="currentColor" stroke-width="6" stroke-linejoin="round"/>
+      <circle cx="50" cy="50" r="17.5" fill="#009C3B"/>
+      <circle cx="50" cy="50" r="17.5" fill="none" stroke="#8FBF00" stroke-width="2.4"/>
+    </symbol>
+  </defs>
+</svg>
+
+<!-- PAGE 1 — COVER -->
+<doc-page size="letter" margin="0.85in">
+  <div class="cover">
+    <div class="cover-top">
+      <a class="logo"><svg class="mark"><use href="#helion-mark"/></svg><span>helion</span></a>
+      <span class="mono">Proposta comercial · confidencial</span>
+    </div>
+    <div class="cover-mid">
+      <span class="eyebrow">Para integradores e gestores de créditos</span>
+      <h1>Transforme sua carteira de usinas em <span class="hl">receita recorrente.</span></h1>
+      <p>O Helion monitora, audita e gera receita a partir de cada usina ou UC que você já gerencia — sem aumentar sua equipe.</p>
+    </div>
+    <div class="cover-bottom">
+      <div class="rec"><span class="dot"></span>helionapp.com.br</div>
+      <span>Environ Energia e Tecnologia · Recife/PE</span>
+    </div>
+  </div>
+</doc-page>
+
+<!-- PAGE 2 — DOR E DIAGNÓSTICO -->
+<doc-page size="letter" margin="0.85in">
+  <div class="pg-header">
+    <a class="logo"><svg class="mark"><use href="#helion-mark"/></svg><span>helion</span></a>
+    <span class="tag">01 · O problema que você já sente</span>
+  </div>
+
+  <span class="sec-tag">Diagnóstico</span>
+  <h2 class="page-title">Seu pós-venda hoje é <span class="serif-i">custo.</span> Podia ser receita.</h2>
+
+  <div class="dor-grid">
+    <div class="dor-card">
+      <span class="k">Se você é integrador</span>
+      <h3>Carteira espalhada, cliente órfão</h3>
+      <p>Dezenas de clientes em 5 portais de inversor diferentes. Sem visão central, o pós-venda só gera custo — e cliente que não recebe atenção não indica, nem renova.</p>
+    </div>
+    <div class="dor-card">
+      <span class="k">Se você gerencia créditos</span>
+      <h3>Auditoria manual não escala</h3>
+      <p>Baixar fatura, conferir compensação, ajustar rateio, cobrar o assinante — tudo na mão, fatura por fatura. Cada erro de rateio vira briga com o cliente.</p>
+    </div>
+  </div>
+
+  <div class="roi-strip">
+    <div class="roi-box"><div class="v">15–20 min</div><div class="l">é o tempo médio que um analista gasta auditando manualmente cada UC, todo mês.</div></div>
+    <div class="roi-box"><div class="v">R$ 100–300</div><div class="l">é o prejuízo mensal típico de um único erro de compensação não detectado.</div></div>
+    <div class="roi-box"><div class="v">0</div><div class="l">integrações extras necessárias — o Helion já fala com os principais inversores e concessionárias.</div></div>
+  </div>
+
+  <div class="quote-block">
+    <b>A oportunidade:</b> o Helion transforma o pós-venda do integrador em receita recorrente — você compra a monitoria no atacado e revende ao seu cliente final com margem. Para o gestor de créditos, a auditoria manual vira automática, e o tempo que sobra vira capacidade de crescer a carteira sem contratar.
+  </div>
+
+  <div class="pg-footer">
+    <span>Helion · Proposta comercial B2B</span>
+    <span>pág. 2 / 4</span>
+  </div>
+</doc-page>
+
+<!-- PAGE 3 — PLANOS E PREÇOS -->
+<doc-page size="letter" margin="0.85in">
+  <div class="pg-header">
+    <a class="logo"><svg class="mark"><use href="#helion-mark"/></svg><span>helion</span></a>
+    <span class="tag">02 · Planos para o seu negócio</span>
+  </div>
+
+  <span class="sec-tag">Investimento</span>
+  <h2 class="page-title">Preço que <span class="serif-i">acompanha</span> o seu crescimento.</h2>
+
+  <div class="plan-table">
+    <div class="ph"><h3>Helion Integrador</h3><span>a partir de R$ 99/mês</span></div>
+    <div class="pb">
+      <div class="dor-line"><b>Para quem:</b> integradores que monitoram usinas de clientes e querem transformar o pós-venda em receita recorrente.</div>
+      <table class="price-tiers">
+        <tr><td>Starter · até 25 usinas</td><td>R$ 99/mês fixo</td></tr>
+        <tr><td>26 a 100 usinas</td><td>R$ 3,50/usina</td></tr>
+        <tr><td>101 a 300 usinas</td><td>R$ 2,90/usina</td></tr>
+        <tr><td>Acima de 300 usinas</td><td>consultoria dedicada</td></tr>
+      </table>
+      <div class="addon-line">App white label (marca própria do integrador): +R$ 199/mês</div>
+      <ul class="feat-list">
+        <li>Painel único para toda a carteira</li>
+        <li>Revenda do app aos clientes finais</li>
+        <li>Alertas de falha por usina</li>
+        <li>Relatórios de pós-venda</li>
+        <li>Central multi-inversor</li>
+        <li>Suporte à implantação</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="plan-table">
+    <div class="ph"><h3>Helion Gestor</h3><span>a partir de R$ 249/mês</span></div>
+    <div class="pb">
+      <div class="dor-line"><b>Para quem:</b> gestores de créditos e energia por assinatura que auditam a compensação de UCs beneficiárias em escala.</div>
+      <table class="price-tiers">
+        <tr><td>Base · até 50 UCs</td><td>R$ 249/mês fixo</td></tr>
+        <tr><td>51 a 200 UCs</td><td>R$ 3,90/UC</td></tr>
+        <tr><td>201 a 500 UCs</td><td>R$ 3,20/UC</td></tr>
+        <tr><td>Acima de 500 UCs</td><td>consultoria dedicada</td></tr>
+      </table>
+      <div class="addon-line">Add-on cobrança automática: R$ 1,50/fatura ou 1% do valor cobrado</div>
+      <ul class="feat-list">
+        <li>Captura automática de faturas</li>
+        <li>Auditoria de compensação por UC</li>
+        <li>Gestão de rateio de créditos</li>
+        <li>Alertas de saldo a expirar</li>
+        <li>Cobrança e emissão de boletos</li>
+        <li>Suporte à implantação</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="pg-footer">
+    <span>Helion · Proposta comercial B2B</span>
+    <span>pág. 3 / 4</span>
+  </div>
+</doc-page>
+
+<!-- PAGE 4 — PRÓXIMOS PASSOS -->
+<doc-page size="letter" margin="0.85in">
+  <div class="pg-header">
+    <a class="logo"><svg class="mark"><use href="#helion-mark"/></svg><span>helion</span></a>
+    <span class="tag">03 · Como começamos</span>
+  </div>
+
+  <span class="sec-tag">Próximos passos</span>
+  <h2 class="page-title">De uma conversa a <span class="serif-i">carteira ativa</span> em poucos dias.</h2>
+
+  <div class="steps">
+    <div class="step-row">
+      <div class="n">1</div>
+      <div><h4>Demonstração guiada</h4><p>Mostramos o painel com dados reais do seu segmento — 30 minutos, sem compromisso.</p></div>
+    </div>
+    <div class="step-row">
+      <div class="n">2</div>
+      <div><h4>Levantamento da carteira</h4><p>Mapeamos o tamanho e o perfil da sua carteira de usinas ou UCs para calibrar o plano certo.</p></div>
+    </div>
+    <div class="step-row">
+      <div class="n">3</div>
+      <div><h4>Implantação assistida</h4><p>Nossa equipe importa os dados existentes (planilhas, sistemas anteriores) e configura sua conta.</p></div>
+    </div>
+    <div class="step-row">
+      <div class="n">4</div>
+      <div><h4>Carteira operando no Helion</h4><p>Monitoramento, auditoria e — se aplicável — revenda white label, ativos em produção.</p></div>
+    </div>
+  </div>
+
+  <div class="cta-band">
+    <h3>Vamos ver seu <span class="serif-i">caso de perto?</span></h3>
+    <p>Agende uma demonstração e receba uma simulação de retorno com os números da sua carteira.</p>
+    <div class="contacts">
+      <span>comercial@helionapp.com.br</span>
+      <span>wa.me/5581999999999</span>
+      <span>helionapp.com.br</span>
+    </div>
+  </div>
+
+  <div class="pg-footer">
+    <span>Helion · Environ Energia e Tecnologia · Recife/PE</span>
+    <span>pág. 4 / 4</span>
+  </div>
+</doc-page>
+
+<script src="doc-page.js"></script>
+</body>
+</html>

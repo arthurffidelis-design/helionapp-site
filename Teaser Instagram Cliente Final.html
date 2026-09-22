@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Helion — Teaser de lançamento · Cliente Final (Instagram)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700;800&family=Geist+Mono:wght@400;500;600&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet" />
+<style>
+  html, body { margin: 0; padding: 0; background: #0a0a0a; }
+  * { box-sizing: border-box; }
+</style>
+</head>
+<body>
+<div id="root"></div>
+
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/html-to-image@1.11.13/dist/html-to-image.js"></script>
+
+<script type="text/babel" src="design-canvas.jsx"></script>
+<script type="text/babel" src="teaser-posters.jsx"></script>
+<script type="text/babel" src="teaser-posters-b2c.jsx"></script>
+
+<script type="text/babel">
+  const { useState } = React;
+
+  const CAPTIONS = {
+    1: 'Tem painel solar em casa ou no seu negócio? 👀☀️ Está chegando um jeito novo de ver a sua energia trabalhando por você — em tempo real. Fique de olho. Em breve, @helionapp. #energiasolar #energiafotovoltaica',
+    2: 'Seu painel pode estar gerando menos hoje — e você só vai perceber na conta de luz. 😟 E se desse pra saber na hora? Em breve. #energiasolar #painelsolar #usinasolar',
+    3: 'Sua usina gerou 612 kWh… mas só 498 apareceram como desconto na conta de luz. Onde foram parar os outros 114? ⚡ Quase ninguém confere — e paga a mais. Em breve, o Helion confere por você. #contadeluz #energiasolar #economia',
+    4: 'Geração ao vivo, alerta no WhatsApp e a sua economia conferida — tudo na palma da mão. 📲⚡ Em breve. #energiasolar #painelsolar #sustentabilidade',
+    5: 'Helion. A sua usina solar no bolso. ☀️ Em breve. Siga @helionapp e seja o primeiro a saber. #helion #energiasolar #painelsolar',
+  };
+
+  function CaptionBox({ n }) {
+    const [copied, setCopied] = useState(false);
+    return (
+      <div style={{ marginTop: 14, width: '100%', background: '#0E1316', border: '1px solid #1E262C', borderRadius: 12, padding: '14px 16px', fontFamily: '"Geist", sans-serif' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
+          <span style={{ fontFamily: '"Geist Mono", monospace', fontSize: 11, letterSpacing: '0.08em', textTransform: 'uppercase', color: '#66727A' }}>Legenda sugerida</span>
+          <button onClick={() => { navigator.clipboard?.writeText(CAPTIONS[n]); setCopied(true); setTimeout(() => setCopied(false), 1400); }}
+            style={{ cursor: 'pointer', fontFamily: '"Geist Mono", monospace', fontSize: 11, letterSpacing: '0.06em', textTransform: 'uppercase',
+              color: copied ? '#06080A' : '#D5FF3A', background: copied ? '#D5FF3A' : 'transparent',
+              border: '1px solid ' + (copied ? '#D5FF3A' : '#2A343B'), borderRadius: 999, padding: '5px 12px', transition: 'all .15s' }}>
+            {copied ? '✓ copiado' : 'copiar'}
+          </button>
+        </div>
+        <p style={{ margin: 0, fontSize: 13.5, lineHeight: 1.5, color: '#9BA7AD' }}>{CAPTIONS[n]}</p>
+      </div>
+    );
+  }
+
+  const POSTS = [
+    { n: 1, label: '01 · Intriga' },
+    { n: 2, label: '02 · Dor — geração' },
+    { n: 3, label: '03 · Dor — conta de luz' },
+    { n: 4, label: '04 · Promessa' },
+    { n: 5, label: '05 · Revelação' },
+  ];
+
+  const REG = {};
+
+  async function exportNode(node, w, h, filename) {
+    await document.fonts.ready;
+    const dataUrl = await window.htmlToImage.toPng(node, { width: w, height: h, pixelRatio: 1, cacheBust: true, style: { transform: 'none', margin: '0' } });
+    const a = document.createElement('a');
+    a.href = dataUrl; a.download = filename; a.click();
+  }
+
+  function Poster({ n, fmt }) {
+    const ref = React.useRef(null);
+    const [busy, setBusy] = useState(false);
+    const w = 1080, h = fmt === 'story' ? 1920 : 1080;
+    const SCALE = 1 / 3;
+    const dw = w * SCALE, dh = h * SCALE;
+    const filename = 'helion-cliente-' + fmt + '-' + String(n).padStart(2, '0') + '.png';
+    const dl = async () => { setBusy(true); try { await exportNode(ref.current, w, h, filename); } finally { setBusy(false); } };
+    REG[fmt + '-' + n] = dl;
+    return (
+      <div style={{ width: dw }}>
+        <div style={{ width: dw, height: dh, overflow: 'hidden', borderRadius: 6 }}>
+          <div ref={ref} style={{ width: w, height: h, transform: 'scale(' + SCALE + ')', transformOrigin: 'top left' }}>
+            <TeaserPosterB2C n={n} fmt={fmt} />
+          </div>
+        </div>
+        <div style={{ display: 'flex', gap: 10, alignItems: 'center', marginTop: 12 }}>
+          <button onClick={dl} disabled={busy}
+            style={{ cursor: busy ? 'wait' : 'pointer', fontFamily: '"Geist", sans-serif', fontSize: 13, fontWeight: 600, color: '#06080A', background: '#D5FF3A', border: 'none', borderRadius: 999, padding: '9px 16px' }}>
+            {busy ? 'Gerando…' : '↓ PNG ' + (fmt === 'story' ? '1080×1920' : '1080×1080')}
+          </button>
+        </div>
+        {fmt === 'feed' && <CaptionBox n={n} />}
+      </div>
+    );
+  }
+
+  function Toolbar() {
+    const [msg, setMsg] = useState('');
+    const dlAll = async (fmt) => {
+      setMsg('Gerando ' + (fmt === 'story' ? 'stories' : 'feed') + '… permita downloads múltiplos');
+      for (const p of POSTS) { const fn = REG[fmt + '-' + p.n]; if (fn) { await fn(); await new Promise((r) => setTimeout(r, 500)); } }
+      setMsg('');
+    };
+    return (
+      <div style={{ position: 'fixed', bottom: 18, left: '50%', transform: 'translateX(-50%)', zIndex: 9999, display: 'flex', gap: 10, alignItems: 'center', background: 'rgba(10,12,14,0.92)', backdropFilter: 'blur(10px)', border: '1px solid #2A343B', borderRadius: 999, padding: '10px 14px', boxShadow: '0 20px 50px -20px rgba(0,0,0,0.7)' }}>
+        <span style={{ fontFamily: '"Geist Mono", monospace', fontSize: 11, letterSpacing: '0.06em', textTransform: 'uppercase', color: '#66727A', paddingLeft: 6 }}>{msg || 'Exportar PNG · Cliente Final'}</span>
+        <button onClick={() => dlAll('feed')} style={tbBtn}>Feed (5)</button>
+        <button onClick={() => dlAll('story')} style={tbBtn}>Stories (5)</button>
+      </div>
+    );
+  }
+  const tbBtn = { cursor: 'pointer', fontFamily: '"Geist", sans-serif', fontSize: 13, fontWeight: 600, color: '#06080A', background: '#D5FF3A', border: 'none', borderRadius: 999, padding: '9px 16px' };
+
+  function App() {
+    return (
+      <React.Fragment>
+        <DesignCanvas>
+          <DCSection id="feed" title="Feed · 1080×1080 · Cliente Final" subtitle="Dono da usina — postar 1 a cada 2–3 dias, na ordem">
+            {POSTS.map((p) => (
+              <DCArtboard key={'f' + p.n} id={'feed-' + p.n} label={p.label} width={360} height={580}>
+                <Poster n={p.n} fmt="feed" />
+              </DCArtboard>
+            ))}
+          </DCSection>
+          <DCSection id="stories" title="Stories · 1080×1920 · Cliente Final" subtitle="Mesma narrativa em formato vertical">
+            {POSTS.map((p) => (
+              <DCArtboard key={'s' + p.n} id={'story-' + p.n} label={p.label} width={360} height={720}>
+                <Poster n={p.n} fmt="story" />
+              </DCArtboard>
+            ))}
+          </DCSection>
+        </DesignCanvas>
+        <Toolbar />
+      </React.Fragment>
+    );
+  }
+
+  ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+</script>
+</body>
+</html>
